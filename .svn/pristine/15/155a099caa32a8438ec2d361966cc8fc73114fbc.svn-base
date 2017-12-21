@@ -1,0 +1,33 @@
+package com.gamejelly.gong2.config.data;
+
+import com.gamejelly.gong2.config.data.base.LData;
+import com.gamejelly.gong2.config.data.base.LMap;
+
+/**
+ * 掉落库表.csv
+ * 掉落库ID = id
+ * 掉落方式 = drop_way
+ * 掉落库类型 = drop_kind
+ * 掉落道具 = droup_prop
+ * 掉落数量下限制 = droup_least
+ * 掉落数量上限 = droup_most
+ * 掉落权重 = droup_weight
+ */
+public class DropStoreData extends LData {
+    public static final LMap data = new LMap();
+
+    static {
+        init0();
+        data.setFrozen(true);
+    }
+
+    private static void init0() {
+data.map(
+    1, map("id", 1, "drop_way", 1, "drop_kind", 1, "droup_prop", list(1, 2), "droup_least", list(100, 200), "droup_most", list(100, 200), "droup_weight", list(5000, 4000)),
+    2, map("id", 2, "drop_way", 1, "drop_kind", 2, "droup_prop", list(101, 102, 103), "droup_least", list(5, 5, 5), "droup_most", list(6, 6, 6), "droup_weight", list(5000, 5000, 5000)),
+    3, map("id", 3, "drop_way", 1, "drop_kind", 3, "droup_prop", list(1, 2), "droup_weight", list(5000, 5000)),
+    4, map("id", 4, "drop_way", 2, "drop_kind", 3, "droup_prop", list(1, 2), "droup_weight", list(5000, 5000))
+);
+    }
+
+}

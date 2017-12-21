@@ -1,0 +1,649 @@
+package com.gamejelly.gong2.dbs.service;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+
+
+import org.apache.commons.collections.CollectionUtils;
+
+
+import com.gamejelly.gong2.dbs.dao.MessageCountModelDao;
+import com.gamejelly.gong2.dbs.dao.UserMessageModelDao;
+import com.gamejelly.gong2.meta.SystemRewardInfo;
+import com.gamejelly.gong2.meta.UserMessageModel;
+import com.gamejelly.gong2.utils.LogicUtils;
+import com.hadoit.game.common.lang.Pair;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.gamejelly.gong2.meta.ChatModel;
+import com.gamejelly.gong2.config.MessageConfig;
+import com.gamejelly.gong2.dbs.dao.AvatarModelDao;
+import com.gamejelly.gong2.dbs.dao.ChatModelDao;
+import com.gamejelly.gong2.dbs.dao.JiejiaoModelDao;
+import com.gamejelly.gong2.dbs.dao.RecentlyContactModelDao;
+import com.gamejelly.gong2.dbs.dao.RelationModelDao;
+import com.gamejelly.gong2.dbs.dao.SharedModelDao;
+import com.gamejelly.gong2.meta.share.SharedModel;
+import com.gamejelly.gong2.meta.AvatarModel;
+import com.gamejelly.gong2.meta.JiejiaoModel;
+import com.gamejelly.gong2.meta.RecentlyContactModel;
+import com.gamejelly.gong2.meta.RelationModel;
+import com.gamejelly.gong2.utils.GongConstants;
+import com.gamejelly.gong2.utils.GongUtils;
+import com.gamejelly.gong2.vo.SimplePlayerInfo;
+import com.hadoit.game.common.lang.Triple;
+import com.hadoit.game.engine.guardian.utils.GuardianLogger;
+
+import java.util.Map;
+
+@Transactional()
+@Component("dbsService")
+public class DbsService {
+
+	@Autowired
+	private AvatarModelDao avatarModelDao;
+
+	@Autowired
+	private SharedModelDao sharedModelDao;
+	
+	@Autowired
+	private RelationModelDao relationModelDao;
+	
+	@Autowired
+	private JiejiaoModelDao jiejiaoModelDao;
+	
+	@Autowired
+	private UserMessageModelDao userMessageModelDao;
+	
+	@Autowired
+	private MessageCountModelDao messageCountModelDao;
+	
+	@Autowired
+	private RecentlyContactModelDao recentlyContactModelDao;
+	
+	@Autowired
+	private ChatModelDao chatModelDao;
+
+
+	public static final String SHARED_MODEL_ID = "SHARED_MODEL_ID_1";
+
+	@PostConstruct
+	public void init() {
+
+		// 判断共享数据表是否存在
+		Long sharedDbId = sharedModelDao.getColumnByCondition("uid = ? limit 1", "id", SHARED_MODEL_ID);
+		if (sharedDbId == null) {
+			SharedModel sm = new SharedModel();
+			sm.setId(SHARED_MODEL_ID);
+			sharedModelDao.addObject(sm);
+		}
+	}
+
+	public void saveAvatarModel(AvatarModel avatarModel) {
+		GuardianLogger.info("SaveAvatarModel", "accountName=", avatarModel.getAccountName(), "id=", avatarModel.getId(),
+				"dbId=", avatarModel.getDbId());
+		avatarModelDao.saveModel(avatarModel);
+	}
+
+	public AvatarModel getAvatarModel(long id) {
+		AvatarModel avatarModel = avatarModelDao.getModel(id);
+		if (avatarModel != null) {
+			GuardianLogger.info("GetAvatarModel", "accountName=", avatarModel.getAccountName(), "id=",
+					avatarModel.getId(), "dbId=", avatarModel.getDbId());
+		}
+		return avatarModel;
+	}
+
+	public void saveSharedModel(SharedModel sModel) {
+		GuardianLogger.info("SharedModel", "id=", sModel.getId(), "dbId=", sModel.getDbId());
+		sharedModelDao.saveModel(sModel);
+	}
+
+	public SharedModel getSharedModel(long id) {
+		SharedModel sModel = sharedModelDao.getModel(id);
+		if (sModel != null) {
+			GuardianLogger.info("hyModel", "id=", sModel.getId(), "dbId=", sModel.getDbId());
+		}
+		return sModel;
+	}
+
+	public SharedModel getSharedData() {
+		Long id = sharedModelDao.getColumnByCondition("uid = ? limit 1", "id", SHARED_MODEL_ID);
+		if (id == null) {
+			return null;
+		}
+		return getSharedModel(id);
+	}
+
+
+	public Long selectSharedModelId(String uid) {
+		return sharedModelDao.getColumnByCondition("uid = ? limit 1", "id", uid);
+	}
+
+	public AvatarModel getAvatarByUid(String uid) {
+		Long id = avatarModelDao.getColumnByCondition("uid = ? limit 1", "id", uid);
+		if (id == null) {
+			return null;
+		}
+		return getAvatarModel(id);
+	}
+
+	public void deleteAvatarModel(long id) {
+		avatarModelDao.deleteModel(id);
+	}
+
+	public AvatarModel getAvatarModelOnly(long id) {
+		return avatarModelDao.getById(id);
+	}
+
+	public AvatarModel getAvatarModelOnlyByUid(String uid) {
+		return avatarModelDao.getObjectByCondition("uid = ? limit 1", uid);
+	}
+
+	public Object[] selectAvatarModelId(String accountName, String avatarId, int serverId) {
+		if (StringUtils.isEmpty(avatarId)) {
+			Long id = avatarModelDao.getColumnByCondition(
+					"accountName = ? and serverId = ? order by loginTime desc limit 1", "id", accountName, serverId);
+			String curAvatarId = avatarModelDao.getColumnByCondition("id = ?", "uid", id);
+
+			return new Object[] { id, curAvatarId };
+		} else {
+			Long id = avatarModelDao.getColumnByCondition("accountName = ? and serverId = ? and uid = ? limit 1", "id",
+					accountName, serverId, avatarId);
+			return new Object[] { id, avatarId };
+		}
+	}
+
+	public Long getAvatarIdByRole(String roleName) {
+		return avatarModelDao.getColumnByCondition("roleName = ? limit 1", "id", roleName);
+	}
+
+	public Integer checkCanCreateRole(String accountName, int serverId, String roleName) {
+		// 检测重名
+		Long id = avatarModelDao.getColumnByCondition("roleName = ? limit 1", "id", roleName);
+		if (id != null) {
+			return GongConstants.CREATE_ROLE_NAME_EXISTS;
+		}
+
+		// 检测角色数量
+		int roleCnt = avatarModelDao.getCountByCondition("accountName = ? and serverId = ?", accountName, serverId);
+		if (roleCnt >= GongConstants.MAX_ROLE_COUNT) {
+			return GongConstants.CREATE_ROLE_COUNT_REACH_MAX;
+		}
+		return 1;
+	}
+
+	
+	private List<SimplePlayerInfo> convertToSimplePlayerInfo(List<AvatarModel> avatarModelList, String avatarId) {
+		List<SimplePlayerInfo> ret = new ArrayList<>();
+		for (AvatarModel avatarModel : avatarModelList) {
+			if (avatarId.equals(avatarModel.getId()))
+				continue;
+			RelationModel rm = getRelationModel(avatarId, avatarModel.getId());
+			
+			SimplePlayerInfo simplPlayInfo = LogicUtils.doConvertToSimplePlayerInfo(avatarModel, rm);
+			ret.add(simplPlayInfo);
+		}
+		return ret;
+	}
+	
+	public RelationModel getRelationModel(String avatarId, String targetAvatarId) {
+		return relationModelDao.getObjectByCondition("avatarId = ? and targetAvatarId = ?", avatarId, targetAvatarId);
+	}
+	
+	public RelationModel updateRelationModel(RelationModel relationModel) {
+		relationModelDao.updateObject(relationModel);
+		return relationModel;
+	}
+	
+	public int getRelation(String avatarId, String targetAvatarId) {
+		if (!relationModelDao.existByCondition("avatarId=? and targetAvatarId=?", avatarId, targetAvatarId)) {
+			return 0;
+		}
+		return relationModelDao.getColumnByCondition("avatarId=? and targetAvatarId=?", "relationType", avatarId,
+				targetAvatarId);
+	}
+	
+	private List<SimplePlayerInfo> getSimplePlayListByIdList(List<String> dbIdList, String avatarId) {
+		if (CollectionUtils.isEmpty(dbIdList))
+			return Collections.emptyList();
+		return convertToSimplePlayerInfo(avatarModelDao.getListByFullCondition("id = ?", dbIdList), avatarId);
+	}
+	
+	public SimplePlayerInfo getSimplePlayInfo(String avatarId, String targetAvatarId) {
+		AvatarModel targetAvatarModel = getAvatarModelOnlyByUid(targetAvatarId);
+		if (targetAvatarModel == null) 
+			return null;
+		RelationModel relationModel = relationModelDao.getObjectByCondition("avatarId = ? and targetAvatarId = ?", avatarId, targetAvatarId);
+		JiejiaoModel jiejiaoModel = getJiejiao(avatarId, targetAvatarId);
+		SimplePlayerInfo spi = LogicUtils.doConvertToSimplePlayerInfo(targetAvatarModel, relationModel);
+		spi.setInvited(jiejiaoModel != null);
+		return spi;
+	}
+	
+	public List<SimplePlayerInfo> getRelationList(String avatarId, int relationType) {
+		List<SimplePlayerInfo> ret = new ArrayList<>();
+		List<RelationModel> relationModels = relationModelDao.getListByFullCondition("avatarId = ? and relationType = ? and targetAvatarId != ?",
+													avatarId, relationType, avatarId);
+		if (CollectionUtils.isEmpty(relationModels))
+			return null;
+		for (RelationModel rm : relationModels) {
+			AvatarModel am = getAvatarModelOnlyByUid(rm.getTargetAvatarId());
+			if (am == null) {
+				continue;
+			}
+			SimplePlayerInfo spi = LogicUtils.doConvertToSimplePlayerInfo(am, rm);
+			if (spi != null)
+				ret.add(spi);
+
+		}
+		return ret;
+	}
+	
+	public void removeFriend(String avatarId, String targetAvatarId) {
+		relationModelDao.updateColumnValueByCondition("avatarId = ? and targerAvatarId = ?", new String[] {"relationType", "qinMiValue"},
+						new Object[]{0,0}, avatarId, targetAvatarId);
+	}
+	
+	public void removeEnemy(String avatarId, String targetAvatarId) {
+		relationModelDao.updateColumnValueByCondition("avatarId = ? and targetAvatarId = ?", "relationType", 0, avatarId, targetAvatarId);
+	}
+	
+	public Pair<Boolean, String> addJiejiao(String avatarId, String targetAvatarId, int myMaxFriendCount) {
+		
+		// 判断好友是数量是否达到上限
+		int friendCount = relationModelDao.getCountByCondition("avatarId = ? and relationType = ?", avatarId, GongConstants.RELATION_TYPE_FRIEND);
+		if (friendCount >= myMaxFriendCount) 
+			Pair.newInstance(false, MessageConfig.getCommonMsg(GongConstants.MSG_ID_FRIEND_REACH_MAX_COUNT));
+		
+		// 判断对方好友数量是否到达上限
+		AvatarModel targetAvatarModel = getAvatarModelOnlyByUid(targetAvatarId);
+		if (targetAvatarModel == null)
+			return null;
+		int targetFriendCount = relationModelDao.getCountByCondition("avatarId = ? and relationType = ?", targetAvatarId, GongConstants.RELATION_TYPE_FRIEND);
+		int targetFriendMaxCount = GongUtils.getVipValue(targetAvatarModel.getVipLv(), "friend", 0);
+		if (targetFriendCount >= targetFriendMaxCount) 
+			return Pair.newInstance(false, MessageConfig.getCommonMsg(GongConstants.MSG_ID_OTHER_FRIEND_REACH_MAX_COUNT));
+		
+		JiejiaoModel jm = new JiejiaoModel();
+		jm.setAvatarId(avatarId);
+		jm.setTargetAvatarId(targetAvatarId);
+		jm.setCreateTime(System.currentTimeMillis());
+		
+		// 判断是否已经是好友
+		int relationType = getRelation(avatarId, targetAvatarId);
+		if (relationType == GongConstants.RELATION_TYPE_FRIEND) 
+			return Pair.newInstance(false, MessageConfig.getCommonMsg(GongConstants.MSG_ID_ALREADY_FRIEND, targetAvatarModel.getRoleName()));
+		else if (relationType == GongConstants.RELATION_TYPE_ENEMY)
+			return Pair.newInstance(false, MessageConfig.getCommonMsg(GongConstants.MSG_ID_ALREADY_ENEMY, targetAvatarModel.getRoleName()));
+		
+		// 判断是否已经结交过
+		if (jiejiaoModelDao.existByCondition("avatarId = ? and targetAvatarId = ?", avatarId, targetAvatarId))
+			return Pair.newInstance(false, MessageConfig.getCommonMsg(GongConstants.MSG_ID_ALREADY_SEND_JIEJIAO));
+		jiejiaoModelDao.addObject(jm);
+		return Pair.newInstance(true, MessageConfig.getCommonMsg(GongConstants.MSG_ID_SUCCESS_SEND_JIEJIAO));
+	}
+	
+	public List<String> addJiejiaoAll(String avatarId, String[] targetAvatarIdList, int maxFriendCount) {
+		List<String> ret = new ArrayList<>();
+		for (String targetAvatarId : targetAvatarIdList) {
+			if (targetAvatarId.equals(avatarId))
+				continue;
+			if (addJiejiao(avatarId, targetAvatarId, maxFriendCount).getFirst()) {
+				ret.add(targetAvatarId);
+			}
+		}
+		return ret;
+	}
+	
+	private JiejiaoModel getJiejiao(String avatarId, String targetAvatarId) {
+		return jiejiaoModelDao.getObjectByCondition("avatarId = ? and targetAvatarId = ?", avatarId, targetAvatarId);
+	}
+	
+	public List<UserMessageModel> getJiejiaoList(String avatarId) {
+		List<UserMessageModel> ummList = userMessageModelDao.getListByFullCondition(
+				"receiverId = ? and majorType = ? and childType = ? order by createTime desc", avatarId,
+				GongConstants.MSG_MAJOR_TYPE_PLAYER, GongConstants.MSG_CHILD_TYPE_JIEJIAO);
+		if (CollectionUtils.isEmpty(ummList)) {
+			return null;
+		}
+		return ummList;
+	}
+	
+	public void removeJiejiao(String avatarId, String targetAvatarId) {
+		jiejiaoModelDao.deleteByCondition("avatarId = ? and targetAvatarId = ?", avatarId, targetAvatarId);
+	}
+	
+	public boolean rejectJiejiao(String avatarId, String fromAvatarId, long userMsgId) {
+		if (!jiejiaoModelDao.existByCondition("avatarId = ? and targetAvatarId = ?", fromAvatarId, avatarId)) 
+			return false;
+		if (!userMessageModelDao.existById(userMsgId))
+			return false;
+		removeJiejiao(fromAvatarId, avatarId);
+		userMessageModelDao.deleteById(userMsgId);
+		return true;
+	}
+	
+	public Triple<Boolean, String, Pair<Integer, Integer>> acceptJiejiao(String avatarId, int vipLv, int myMaxCount, String fromAvatarId,
+					int fromVipLv, long userMsgId) {
+		AvatarModel fromAm = getAvatarByUid(fromAvatarId);
+		if (fromAm == null)
+			return Triple.newInstance(false, null, null);
+		int relationType = getRelation(avatarId, fromAvatarId);
+		if (relationType == GongConstants.RELATION_TYPE_ENEMY) {
+			// 已经是仇敌，删除消息
+			removeJiejiao(fromAvatarId, avatarId);
+			userMessageModelDao.deleteById(userMsgId);
+			return Triple.newInstance(false,
+					MessageConfig.getCommonMsg(GongConstants.MSG_ID_ALREADY_ENEMY, fromAm.getRoleName()), null);
+		}
+		//检测自己好友数量
+		int myFriendCount = relationModelDao.getCountByCondition("avatarId = ? and relationType = ?", avatarId, GongConstants.RELATION_TYPE_FRIEND);
+		if (myFriendCount >= myMaxCount) {
+			// 并且删除消息
+			removeJiejiao(fromAvatarId, avatarId);
+			userMessageModelDao.deleteById(userMsgId);
+			return Triple.newInstance(false, MessageConfig.getCommonMsg(GongConstants.MSG_ID_FRIEND_REACH_MAX_COUNT),
+					null);
+		}
+		if (fromVipLv < 0) {
+			fromVipLv = fromAm.getVipLv();
+		}
+		// 检测对方好友的数量
+		int fromMaxFriendCount = GongUtils.getVipValue(fromVipLv, "friend", 0);
+		int fromFriendCount = relationModelDao.getCountByCondition("avatarId = ? and relationType = ?", fromAm.getId(), GongConstants.RELATION_TYPE_FRIEND);
+		if (fromFriendCount >= fromMaxFriendCount) {
+			removeJiejiao(fromAvatarId, avatarId);
+			userMessageModelDao.deleteById(userMsgId);
+			return Triple.newInstance(false, MessageConfig.getCommonMsg(GongConstants.MSG_ID_OTHER_FRIEND_REACH_MAX_COUNT),
+					null);
+		}
+		
+		if (!userMessageModelDao.existById(userMsgId)) {
+			return null;
+		}
+		
+		removeJiejiao(fromAvatarId, avatarId);
+		userMessageModelDao.deleteById(userMsgId);
+		
+		//  添加好友，如果relationModel表中存在记录则更新relationType字段，如果不存在则新增记录
+		if (relationModelDao.existByCondition("avatarId = ? and targetAvatarId = ?", avatarId, fromAvatarId)) {
+			relationModelDao.updateColumnValueByCondition("avatarId = ? and targetAvatarId = ?", "relationType", 
+					GongConstants.RELATION_TYPE_FRIEND, avatarId, fromAvatarId);
+		} else {
+			RelationModel relationModel = new RelationModel();
+			relationModel.setAvatarId(avatarId);
+			relationModel.setTargetAvatarId(fromAvatarId);
+			relationModel.setRelationType(GongConstants.RELATION_TYPE_FRIEND);
+			relationModel.setCreateTime(System.currentTimeMillis());
+			relationModelDao.addObject(relationModel);
+		}
+		
+		if (relationModelDao.existByCondition("avatarId=? and targetAvatarId=?", fromAvatarId, avatarId)) {
+			relationModelDao.updateColumnValueByCondition("avatarId=? and targetAvatarId=?", "relationType",
+					GongConstants.RELATION_TYPE_FRIEND, fromAvatarId, avatarId);
+		} else {
+			RelationModel rm = new RelationModel();
+			rm.setAvatarId(fromAvatarId);
+			rm.setTargetAvatarId(avatarId);
+			rm.setRelationType(GongConstants.RELATION_TYPE_FRIEND);
+			rm.setCreateTime(System.currentTimeMillis());
+			relationModelDao.addObject(rm);
+		}
+		
+		return Triple.newInstance(true, null, Pair.newInstance(myFriendCount + 1, fromFriendCount + 1));
+	}
+	
+	public Pair<Boolean, String> addEnemy(String avatarId, String targetAvatarId, int maxCount) {
+		AvatarModel targetAm = getAvatarModelOnlyByUid(targetAvatarId);
+		if (targetAm == null) {
+			return null;
+		}
+
+		int relationType = getRelation(avatarId, targetAvatarId);
+		if (relationType == GongConstants.RELATION_TYPE_FRIEND) {
+			return Pair.newInstance(false, "");
+		} else if (relationType == GongConstants.RELATION_TYPE_ENEMY) {
+			return Pair.newInstance(false,
+					MessageConfig.getCommonMsg(GongConstants.MSG_ID_ALREADY_ENEMY, targetAm.getRoleName()));
+		}
+
+		int enemyCount = relationModelDao.getCountByCondition("avatarId=? and relationType=?", avatarId,
+				GongConstants.RELATION_TYPE_ENEMY);
+		if (enemyCount >= maxCount) {
+			return Pair.newInstance(false, MessageConfig.getCommonMsg(GongConstants.MSG_ID_ENEMY_REACH_MAX_COUNT));
+		}
+
+		if (relationModelDao.existByCondition("avatarId=? and targetAvatarId=?", avatarId, targetAvatarId)) {
+			relationModelDao.updateColumnValueByCondition("avatarId=? and targetAvatarId=?", "relationType",
+					GongConstants.RELATION_TYPE_ENEMY, avatarId, targetAvatarId);
+		} else {
+			RelationModel rm = new RelationModel();
+			rm.setAvatarId(avatarId);
+			rm.setTargetAvatarId(targetAvatarId);
+			rm.setRelationType(GongConstants.RELATION_TYPE_ENEMY);
+			rm.setCreateTime(System.currentTimeMillis());
+			relationModelDao.addObject(rm);
+		}
+
+		return Pair.newInstance(true, null);
+	}
+	
+
+	public void addALLUserMessage(List<UserMessageModel> msgList) {
+		for (int i = 0; i < msgList.size(); i++) {
+			addUserMessage(msgList.get(i));
+		}
+	}
+	
+	public List<SimplePlayerInfo> searchByName(String key, int page, int limit, String avatarId) {
+		int offset = (page-1) * limit;
+		List<AvatarModel> avatarModelList = avatarModelDao.getListByCondition("roleName like CONCAT('%', CONCAT(?, '%'))  and uid != ? and robotId = 0", limit, offset, key, avatarId);
+//		if (CollectionUtils.isEmpty(avatarModelList) && StringUtils.isNumeric(key)) {
+//			// 可能输入的是gbid
+//			avatarModelList = avatarModelDao.getListByFullCondition("gbId = ?", Long.valueOf(key));
+//		}
+		if (CollectionUtils.isEmpty(avatarModelList)) {
+			return Collections.emptyList();
+		}
+		return convertToSimplePlayerInfo(avatarModelList, avatarId);
+	}
+	
+	public List<SimplePlayerInfo> getRecentContact(String avatarId) {
+
+		List<RecentlyContactModel> lstRecentlyContact = recentlyContactModelDao.getListByCondition("avatarId=?",
+				"createTime", true, avatarId);
+
+		List<String> lstRec = new ArrayList<String>();
+		if (lstRecentlyContact == null) {
+			return null;
+		}
+		for (int i = 0; i < lstRecentlyContact.size(); i++) {
+			RecentlyContactModel rlcModel = lstRecentlyContact.get(i);
+			lstRec.add(rlcModel.getTargetAvatarId());
+		}
+
+		List<AvatarModel> lst = avatarModelDao.getListByConditionRepeat("uid=?", convertRepeatParams(lstRec));
+		// 排序
+		List<AvatarModel> ret = new ArrayList<AvatarModel>();
+		for (int i = lstRec.size() - 1; i >= 0; i--) {
+			String listAvatarIdTemp1 = lstRec.get(i);
+			for (int j = 0; j < lst.size(); j++) {
+				String listAvatarIdTemp2 = lst.get(j).getId();
+				if (StringUtils.equals(listAvatarIdTemp1, listAvatarIdTemp2)) {
+					ret.add(lst.get(j));
+					break;
+				}
+			}
+		}
+
+		return convertToSimplePlayerInfo(ret, avatarId);
+	}
+	
+	private List<Object[]> convertRepeatParams(List<?> pList) {
+		if (CollectionUtils.isEmpty(pList)) {
+			return Collections.emptyList();
+		}
+		List<Object[]> ret = new ArrayList<Object[]>();
+		for (Object o : pList) {
+			ret.add(new Object[] { o });
+		}
+		return ret;
+	}
+	
+	public List<ChatModel> getSiliaoChat(String avatarId, String targetAvatarId) {
+		return chatModelDao.getListByCondition("avatarId = ? and targetAvatarId = ?", "createTime", true, avatarId, targetAvatarId);
+	}
+
+	public void addSystemMsg(String aId, String content, SystemRewardInfo systemRewardInfo, long currTime) {
+		if (systemRewardInfo != null) {
+			addUserMessage(LogicUtils.createSystemRewardMessage(aId, content, systemRewardInfo, currTime));
+		} else {
+			addUserMessage(LogicUtils.createSystemCommonMsg(aId, content, currTime));
+		}
+	}
+
+	public Pair<Long, List<String>> createAllSystemMsgList(long baseId, int levellimit) {
+		String sql="";
+		if(levellimit>1) {
+			sql = "select id, uid from AvatarModel where id > ? and robotId = 0 and (vipLv > 0 or lv >= "+levellimit+") order by id limit ?";
+		}else{
+			sql = "select id, uid from AvatarModel where id > ? and robotId = 0 and (lv >= 10 or vipLv > 0 or unix_timestamp() - loginTime/1000 < 30 * 24 * 3600) order by id limit ?";
+		}
+		int limit = 5000;
+
+		List<String> dls = new ArrayList<>();
+		List<Map<String, Object>> idUid = avatarModelDao.getCommonJdbcTemplate().queryForList(sql, baseId, limit);
+		if (idUid.size() == 0) {
+			return null;
+		}
+		for (Map<String, Object> dl : idUid) {
+			long id = Long.parseLong(dl.get("id").toString());
+			baseId = id;
+			dls.add(dl.get("uid").toString());
+		}
+		return Pair.newInstance(baseId, dls);
+	}
+
+	public void addUserMessage(UserMessageModel msg) {
+
+		if (msg == null) {
+			return;
+		}
+
+		if (msg.getMajorType() == GongConstants.MSG_MAJOR_TYPE_SYSTEM
+				&& msg.getChildType() == GongConstants.MSG_CHILD_TYPE_SYSTEM_REWARD) {
+			// 系统奖励限制
+			boolean sendReward = checkCanSendSystemReward(msg.getReceiverId());
+			if (!sendReward) {
+				return;
+			}
+		} 
+
+		userMessageModelDao.addObject(msg);
+		incrMessageCount(msg.getReceiverId(), "msgCnt");
+
+	}
+
+	public boolean checkCanSendSystemReward(String avatarId) {
+
+		if (StringUtils.isEmpty(avatarId)) {
+			return false;
+		}
+
+		boolean ret = false;
+
+		Long loginTime = avatarModelDao.getColumnByCondition("uid = ? limit 1", "loginTime", avatarId);
+		Long logoutTime = avatarModelDao.getColumnByCondition("uid = ? limit 1", "logoutTime", avatarId);
+		Integer lv = avatarModelDao.getColumnByCondition("uid = ? limit 1", "lv", avatarId);
+		Integer vipLv = avatarModelDao.getColumnByCondition("uid = ? limit 1", "vipLv", avatarId);
+
+		long nearTime = logoutTime;
+		if (loginTime > logoutTime) {
+			nearTime = loginTime;
+		}
+
+		long curTime = System.currentTimeMillis();
+		long howLongTime = curTime - nearTime;
+		if (howLongTime < 0) {
+			GuardianLogger.info("checkCanSendSystemReward avatarId=", avatarId, "howLongTime=", howLongTime, " ret=",
+					ret);
+			return false;
+		}
+		long days = howLongTime / (1000 * 60 * 60 * 24);
+		if (days < 30 || lv > 10 || vipLv > 0) {
+			// 30天内上过线，等级大于10 ，是VIP
+			ret = true;
+		}
+		GuardianLogger.info("checkCanSendSystemReward avatarId=", avatarId, " days=", days, "howLongTime=", howLongTime,
+				" ret=", ret);
+		return ret;
+	}
+	/**
+	 * 增加未读消息数
+	 *
+	 * @param avatarId
+	 * @param column
+	 */
+	private void incrMessageCount(String avatarId, String column) {
+		messageCountModelDao.incrColumnCountByCondition("avatarId=?", column, 1, avatarId);
+	}
+	
+	public Pair<Long, List<String>> createAllSystemMsgList(long baseId) {
+		final String sql = "select id, uid from AvatarModel where id > ? and robotId = 0 and (lv >= 10 or vipLv > 0 or unix_timestamp() - loginTime/1000 < 30 * 24 * 3600) order by id limit ?";
+		int limit = 5000;
+		List<String> dls = new ArrayList<String>();
+		List<Map<String, Object>> idUid = avatarModelDao.getCommonJdbcTemplate().queryForList(sql, baseId, limit);
+		if (idUid.size() == 0) {
+			return null;
+		}
+		for (Map<String, Object> dl : idUid) {
+			long id = Long.parseLong(dl.get("id").toString());
+			baseId = id;
+			dls.add(dl.get("uid").toString());
+		}
+		return Pair.newInstance(baseId, dls);
+	}
+	
+	public void updateWindowStatus(String avatarId, String targetAvatarId) {
+		//更新relationModel表中聊天窗口字段
+		updateRelationModelWindowStatus(avatarId, targetAvatarId);
+		//更新recentlyContactModel表中聊天窗口状态字段
+		updateRecentContactModelWindowStatus(avatarId, targetAvatarId);
+	}
+	
+	private void updateRelationModelWindowStatus(String avatarId, String targetAvatarId) {
+		StringBuffer sql = new StringBuffer("UPDATE RelationModel  SET msgWindowStatus = ?  WHERE avatarId = ? ");
+		if (StringUtils.isBlank(targetAvatarId)) {
+			relationModelDao.update(sql.toString(), GongConstants.MSG_WINDOW_CLOSE, avatarId);
+		} else {
+			sql.append("and targetAvatarId != ? ");
+			relationModelDao.update(sql.toString(), GongConstants.MSG_WINDOW_CLOSE, avatarId, targetAvatarId);
+		}
+	}
+	
+	private void updateRecentContactModelWindowStatus(String avatarId, String targetAvatarId) {
+		StringBuffer sql = new StringBuffer("UPDATE RecentlyContactModel SET msgWindowStatus = ? WHERE avatarId = ? ");
+		if (StringUtils.isBlank(targetAvatarId)) {
+			recentlyContactModelDao.update(sql.toString(), GongConstants.MSG_WINDOW_CLOSE, avatarId);
+		} else {
+			sql.append("and targetAvatarId != ?");
+			recentlyContactModelDao.update(sql.toString(), GongConstants.MSG_WINDOW_CLOSE, avatarId, targetAvatarId);
+		}
+	}
+	
+	public RecentlyContactModel getRelationContactModel(String avatarId, String targetId) {
+
+		String sql = "select id,avatarId,targetAvatarId,createTime,msgType,msgWindowStatus from  RecentlyContactModel where  avatarId=?  and targetAvatarId=? ";
+
+		return recentlyContactModelDao.getObject(sql, avatarId, targetId);
+	}
+
+}

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+         http://www.springframework.org/schema/mvc
+         http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
+
+	<bean id="ipSecurityInterceptor"
+		class="com.hadoit.game.common.framework.web.security.IPSecurityInterceptor">
+		<!-- 登陆login后台的IP限制 -->
+		<property name="allowIpList">
+			<list>
+				<!-- 本机 -->
+				<value>127.0.0.1</value>
+				<value>192.168.*.*</value>
+				<value>10.10.*.*</value>
+				
+				<!-- 阿里云 -->
+				<value>10.*.*.*</value>
+				<value>121.199.55.33</value>
+				<value>112.124.40.222</value>
+				<value>121.199.22.177</value>
+				
+				<!-- HD -->
+				<value>121.199.54.239</value>
+				
+			</list>
+		</property>
+	</bean>
+
+	<bean id="securityInterceptor"
+		class="com.hadoit.game.common.framework.web.security.SecurityInterceptor">
+		<property name="securityUserDetailAdapter" ref="securityUserDetailAdapter" />
+		<property name="securityFailedUrl">
+			<value>login</value>
+		</property>
+		<property name="mappings">
+			<value>
+				manager=admin
+			</value>
+		</property>
+	</bean>
+
+	<bean id="securityUserDetailAdapter"
+		class="com.hadoit.game.common.framework.web.security.SecurityUserDetailAdapter">
+		<property name="useSession" value="true" />
+	</bean>
+
+	<bean id="securityResourceAdvice"
+		class="com.hadoit.game.common.framework.web.security.SecurityResourceAdvice">
+		<property name="securityUserDetailAdapter" ref="securityUserDetailAdapter" />
+	</bean>
+
+</beans>

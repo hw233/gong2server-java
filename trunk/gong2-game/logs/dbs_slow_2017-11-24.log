@@ -1,0 +1,12 @@
+[2017-11-24 11:41:27] 140902 [Dbs-worker-1] INFO  slow  - TIME [loadGameObject] takes: 0.085s
+[2017-11-24 11:42:30] 204155 [Dbs-worker-2] INFO  slow  - TIME [saveGameObject] takes: 0.113s
+[2017-11-24 11:43:23] 257088 [Dbs-worker-4] INFO  slow  - TIME [loadGameObject] takes: 0.029s
+[2017-11-24 11:43:57] 291476 [Dbs-worker-5] INFO  slow  - TIME [saveGameObject] takes: 0.063s
+[2017-11-24 11:49:20] 614192 [Dbs-worker-10] INFO  slow  - TIME [saveGameObject] takes: 0.052s
+[2017-11-24 11:59:20] 1214201 [Dbs-worker-13] INFO  slow  - TIME [saveGameObject] takes: 0.06s
+[2017-11-24 12:04:20] 1514198 [Dbs-worker-15] INFO  slow  - TIME [saveGameObject] takes: 0.057s
+[2017-11-24 12:14:20] 2114203 [Dbs-worker-18] INFO  slow  - TIME [saveGameObject] takes: 0.06s
+[2017-11-24 12:24:20] 2714188 [Dbs-worker-1] INFO  slow  - TIME [saveGameObject] takes: 0.047s
+[2017-11-24 12:29:20] 3014197 [Dbs-worker-3] INFO  slow  - TIME [saveGameObject] takes: 0.056s
+[2017-11-24 12:38:34] 3567834 [Dbs-worker-5] INFO  slow  - TIME [saveGameObject] takes: 0.066s
+[2017-11-24 13:37:21] 7095379 [Dbs-worker-4] INFO  slow  - TIME [saveGameObject] takes: 0.034s

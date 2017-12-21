@@ -1,0 +1,3 @@
+[2017-11-24 11:41:27] 126369 [Gas-main-0] INFO  slow  - TIME [loginAvatar] takes: 0.166s
+[2017-11-24 11:43:23] 242496 [Gas-main-0] INFO  slow  - TIME [loginAvatar] takes: 0.048s
+[2017-11-24 11:44:06] 284948 [Gas-main-0] INFO  slow  - TIME [loginAvatar] takes: 0.031s

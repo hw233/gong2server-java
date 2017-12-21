@@ -1,0 +1,15 @@
+[2017-12-07 10:21:48] 4266 [Gas-main-0] INFO  slow  - TIME [loginAvatar] takes: 0.076s
+[2017-12-07 10:42:58] 1784 [Gas-main-0] INFO  slow  - TIME [loginAvatar] takes: 0.086s
+[2017-12-07 10:49:18] 21609 [Gas-main-0] INFO  slow  - TIME [loginAvatar] takes: 0.138s
+[2017-12-07 10:52:47] 1471 [Gas-main-0] INFO  slow  - TIME [loginAvatar] takes: 0.092s
+[2017-12-07 10:57:54] 16803 [Gas-main-0] INFO  slow  - TIME [loginAvatar] takes: 0.073s
+[2017-12-07 11:00:30] 1568 [Gas-main-0] INFO  slow  - TIME [loginAvatar] takes: 0.082s
+[2017-12-07 11:04:46] 24854 [Gas-main-0] INFO  slow  - TIME [loginAvatar] takes: 0.075s
+[2017-12-07 11:05:32] 71360 [Gas-main-0] INFO  slow  - TIME [loginAvatar] takes: 0.035s
+[2017-12-07 11:07:10] 1558 [Gas-main-0] INFO  slow  - TIME [loginAvatar] takes: 0.075s
+[2017-12-07 11:18:28] 4702 [Gas-main-0] INFO  slow  - TIME [loginAvatar] takes: 0.104s
+[2017-12-07 14:51:58] 12813926 [Gas-main-0] INFO  slow  - TIME [loginAvatar] takes: 0.027s
+[2017-12-07 18:07:53] 33285 [Gas-main-0] INFO  slow  - TIME [loginAvatar] takes: 3.171s
+[2017-12-07 18:08:42] 1097 [Gas-main-0] INFO  slow  - TIME [loginAvatar] takes: 0.076s
+[2017-12-07 18:09:31] 2768 [Gas-main-0] INFO  slow  - TIME [loginAvatar] takes: 0.074s
+[2017-12-07 19:19:26] 4196874 [Gas-main-0] INFO  slow  - TIME [loginAvatar] takes: 0.032s

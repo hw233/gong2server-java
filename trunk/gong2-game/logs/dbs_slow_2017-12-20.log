@@ -1,0 +1,2 @@
+[2017-12-20 18:19:28] 9338 [Dbs-worker-1] INFO  slow  - TIME [loadGameObject(SharedEntity)] takes: 0.068s
+[2017-12-20 19:09:14] 7861 [Dbs-worker-1] INFO  slow  - TIME [loadGameObject(SharedEntity)] takes: 0.064s

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+         http://www.springframework.org/schema/util
+         http://www.springframework.org/schema/util/spring-util-2.0.xsd">
+
+	<bean id="gasManager" class="com.hadoit.game.engine.guardian.gas.GasManager"
+		destroy-method="dispose">
+		<property name="dbsHost" value="${config.dbs_host}" />
+		<property name="dbsPort" value="${config.dbs_port}" />
+		<property name="listenHost" value="${config.client_listen_host}" />
+		<property name="listenPort" value="${config.client_listen_port}" />
+		<property name="clientIdleTime" value="${config.client_idle_time}" />
+		<property name="serverFreq" value="${config.server_freq}" />
+		<property name="archivePeriod" value="${config.server_archive_period}" />
+		<property name="serverId" value="${config.server_id}" />
+		<property name="codecFactory">
+			<bean
+				class="com.hadoit.game.engine.core.rpc.base.codec.factory.FstMessageCodecFactory" />
+		</property>
+		<property name="clientCodecFactory">
+			<bean
+				class="com.hadoit.game.engine.core.rpc.base.codec.factory.JsonMessageCodecFactory">
+				<property name="excludeTypes">
+					<array>
+						<value>client</value>
+					</array>
+				</property>
+			</bean>
+		</property>
+		<property name="clientEncryptFactory">
+			<bean
+				class="com.hadoit.game.engine.guardian.gas.GasClientMessageEncryptFactory">
+				<property name="salt" value="${config.server_key}" />
+			</bean>
+		</property>
+		<property name="gasServerProxy" ref="gasServerProxy" />
+	</bean>
+
+	<bean id="globalClient"
+		class="com.hadoit.game.engine.guardian.global.client.GlobalClient"
+		destroy-method="dispose">
+		<property name="globalHost" value="${config.global_host}" />
+		<property name="globalPort" value="${config.global_port}" />
+		<property name="clientId">
+			<util:constant
+				static-field="com.gamejelly.gong2.utils.GongConstants.CROSS_SERVER_ID" />
+		</property>
+		<property name="codecFactory">
+			<bean
+				class="com.hadoit.game.engine.core.rpc.base.codec.factory.FstMessageCodecFactory" />
+		</property>
+		<property name="globalClientListener" ref="crossServerClientListener" />
+	</bean>
+</beans>

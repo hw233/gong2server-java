@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE project [<!ENTITY buildfile SYSTEM "file:./build-user.xml">]>
+<project basedir="." default="deploy" name="gong2game">
+	<property name="groovy" value="groovy" />
+	<property name="mvn" value="mvn" />
+	<property name="svn" value="svn" />
+	<property name="tools.dir" value="tools" />
+	<property name="src.dir" value="src/main/java" />
+	<property name="resources.dir" value="src/main/resources" />
+	<property name="target.dir" value="target" />
+	<property name="classes.dir" value="${target.dir}/classes" />
+	<property name="lib.dir" value="${target.dir}/lib" />
+	<property name="deploy.dir" value="/gamejelly_gong2/deploy_gong2_game" />
+	<property name="deploy.opr" value="" />
+	<property name="deploy.classes" value="${deploy.dir}/classes" />
+	<property name="deploy.lib" value="${deploy.dir}/lib" />
+
+	<property name="script.update" value="${tools.dir}/scripts/update_and_check.groovy" />
+	<property name="script.commit" value="${tools.dir}/scripts/apci.sh" />
+
+	<path id="tools-classpath">
+		<fileset dir="${tools.dir}/lib">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<taskdef name="groovy" classname="org.codehaus.groovy.ant.Groovy"
+		classpathref="tools-classpath" />
+
+	<target name="lock">
+		<groovy>
+			<![CDATA[
+			println 'checking lock status......'
+			def f = new File(".lock");
+			if(f.exists()){
+				f.eachLine{
+					def d = new Date(it.toLong());
+					throw new Exception("project is locked on ${d}, probably deploy is going on...");
+				}
+			}else {
+				println 'add lock......'
+				f<<System.currentTimeMillis();
+			}
+			]]>
+		</groovy>
+	</target>
+
+	<target name="unlock">
+		<delete file=".lock" />
+	</target>
+
+	<target name="update">
+		<exec dir="${path}" executable="${groovy}" failonerror="true"
+			errorproperty="update.err">
+			<arg line="${script.update}" />
+		</exec>
+		<fail message="met error when updating from svn, maybe conflict found!">
+			<condition>
+				<contains string="${update.err}" substring="@conflict found@" />
+			</condition>
+		</fail>
+	</target>
+
+	<target name="commit">
+		<exec dir="${path}" executable="${script.commit}" failonerror="true" />
+	</target>
+
+	<target name="clean">
+		<delete dir="${target.dir}" />
+		<exec dir="${basedir}" executable="${mvn}" failonerror="true">
+			<arg line="dependency:copy-dependencies -DoutputDirectory=${lib.dir}" />
+		</exec>
+	</target>
+
+	<target name="compile" depends="clean">
+		<exec dir="${basedir}" executable="${mvn}" failonerror="true">
+			<arg line="compile" />
+		</exec>
+	</target>
+
+	<target name="conf">
+		<!-- change conf to remote -->
+		<antcall target="remotexml">
+			<param name="path" value="${classes.dir}" />
+		</antcall>
+		<!-- change *.deploy to * -->
+		<move todir="${classes.dir}">
+			<fileset dir="${classes.dir}" />
+			<mapper type="glob" from="*.deploy" to="*" />
+		</move>
+		<!-- change *.deploy.${deploy.opr} to * -->
+		<move todir="${classes.dir}">
+			<fileset dir="${classes.dir}" />
+			<mapper type="glob" from="*.deploy.${deploy.opr}" to="*" />
+		</move>
+		<delete>
+			<fileset dir="${classes.dir}">
+				<include name="**/*.deploy.*" />
+			</fileset>
+		</delete>
+	</target>
+
+	<target name="cp_deploy">
+		<mkdir dir="${deploy.dir}" />
+		<delete quiet="true">
+			<fileset dir="${deploy.dir}">
+				<include name="*.sh" />
+			</fileset>
+			<fileset dir="${deploy.classes}" />
+			<fileset dir="${deploy.lib}" />
+		</delete>
+		<!-- <copy todir="${deploy.dir}" preservelastmodified="true"> <fileset 
+			dir="${tools.dir}/shells"> <include name="*.sh" /> </fileset> </copy> -->
+		<copy todir="${deploy.dir}" preservelastmodified="true">
+			<fileset dir="${tools.dir}/shells_mac">
+				<include name="*.sh" />
+			</fileset>
+		</copy>
+		<copy todir="${deploy.classes}" preservelastmodified="true">
+			<fileset dir="${classes.dir}" />
+		</copy>
+		<copy todir="${deploy.lib}" preservelastmodified="true">
+			<fileset dir="${lib.dir}" />
+		</copy>
+	</target>
+
+	<target name="deploy">
+		<echo message="begin auto deploy......" />
+		<antcall target="lock" />
+		<antcall target="update">
+			<param name="path" value="${basedir}" />
+		</antcall>
+		<!-- <antcall target="update"> <param name="path" value="${deploy.dir}" 
+			/> </antcall> -->
+		<antcall target="compile" />
+		<antcall target="conf" />
+		<antcall target="cp_deploy" />
+		<!-- <antcall target="commit"> <param name="path" value="${deploy.dir}" 
+			/> </antcall> -->
+		<antcall target="unlock" />
+	</target>
+
+	<target name="conf_release">
+		<antcall target="remotexml">
+			<param name="path" value="${resources.dir}" />
+		</antcall>
+	</target>
+
+	<target name="conf_local">
+		<antcall target="localxml">
+			<param name="path" value="${resources.dir}" />
+		</antcall>
+	</target>
+
+	<target name="localxml">
+		<replaceregexp encoding="utf-8" flags="img"
+			match="^[\s]*&lt;!--[\s]*local[\s]*$" replace="&lt;!--local--&gt;&#13;">
+			<fileset dir="${path}">
+				<include name="**/*.xml" />
+			</fileset>
+		</replaceregexp>
+
+		<replaceregexp encoding="utf-8" flags="img"
+			match="^[\s]*localEnd[\s]*--&gt;[\s]*$" replace="&lt;!--localEnd--&gt;&#13;">
+			<fileset dir="${path}">
+				<include name="**/*.xml" />
+			</fileset>
+		</replaceregexp>
+
+		<replaceregexp encoding="utf-8" flags="img"
+			match="^[\s]*&lt;!--[\s]*remote[\s]*--&gt;[\s]*$" replace="&lt;!--remote&#13;">
+			<fileset dir="${path}">
+				<include name="**/*.xml" />
+			</fileset>
+		</replaceregexp>
+
+		<replaceregexp encoding="utf-8" flags="img"
+			match="^[\s]*&lt;!--[\s]*remoteEnd[\s]*--&gt;[\s]*$" replace="remoteEnd--&gt;&#13;">
+			<fileset dir="${path}">
+				<include name="**/*.xml" />
+			</fileset>
+		</replaceregexp>
+	</target>
+
+	<target name="remotexml">
+		<replaceregexp encoding="utf-8" flags="img"
+			match="^[\s]*&lt;!--[\s]*local[\s]*--&gt;[\s]*$" replace="&lt;!--local&#13;">
+			<fileset dir="${path}">
+				<include name="**/*.xml" />
+			</fileset>
+		</replaceregexp>
+		<replaceregexp encoding="utf-8" flags="img"
+			match="^[\s]*&lt;!--[\s]*localEnd[\s]*--&gt;[\s]*$" replace="localEnd--&gt;&#13;">
+			<fileset dir="${path}">
+				<include name="**/*.xml" />
+			</fileset>
+		</replaceregexp>
+		<replaceregexp encoding="utf-8" flags="img"
+			match="^[\s]*&lt;!--[\s]*remote[\s]*$" replace="&lt;!--remote--&gt;&#13;">
+			<fileset dir="${path}">
+				<include name="**/*.xml" />
+			</fileset>
+		</replaceregexp>
+		<replaceregexp encoding="utf-8" flags="img"
+			match="^[\s]*remoteEnd[\s]*--&gt;[\s]*$" replace="&lt;!--remoteEnd--&gt;&#13;">
+			<fileset dir="${path}">
+				<include name="**/*.xml" />
+			</fileset>
+		</replaceregexp>
+	</target>
+</project>

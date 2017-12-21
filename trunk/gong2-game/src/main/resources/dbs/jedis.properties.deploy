@@ -1,0 +1,9 @@
+jedis.url=127.0.0.1:6379
+jedis.password=dev
+jedis.maxActive=100
+jedis.maxIdle=10
+jedis.maxWait=10000
+jedis.testOnBorrow=true
+jedis.testWhileIdle=true
+jedis.timeBetweenEvictionRunsMillis=1500000
+jedis.minEvictableIdleTimeMillis=1800000

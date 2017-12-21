@@ -1,0 +1,9 @@
+[2017-11-29 13:58:43] 514123 [Gas-main-0] INFO  slow  - TIME [loginAvatar] takes: 0.094s
+[2017-11-29 14:03:20] 46330 [Gas-main-0] INFO  slow  - TIME [loginAvatar] takes: 0.082s
+[2017-11-29 14:06:57] 36726 [Gas-main-0] INFO  slow  - TIME [loginAvatar] takes: 0.112s
+[2017-11-29 14:13:15] 107960 [Gas-main-0] INFO  slow  - TIME [loginAvatar] takes: 0.075s
+[2017-11-29 15:12:06] 33982 [Gas-main-0] INFO  slow  - TIME [loginAvatar] takes: 0.157s
+[2017-11-29 15:48:55] 278434 [Gas-main-0] INFO  slow  - TIME [loginAvatar] takes: 0.107s
+[2017-11-29 15:52:36] 500203 [Gas-main-0] INFO  slow  - TIME [loginAvatar] takes: 0.026s
+[2017-11-29 17:03:58] 4782351 [Gas-main-0] INFO  slow  - TIME [loginAvatar] takes: 0.039s
+[2017-11-29 17:41:02] 38696 [Gas-main-0] INFO  slow  - TIME [loginAvatar] takes: 0.148s

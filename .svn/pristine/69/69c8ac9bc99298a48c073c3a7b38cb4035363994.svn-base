@@ -1,0 +1,592 @@
+package com.gamejelly.gong2.gas.service.user;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import com.gamejelly.gong2.config.data.*;
+import com.gamejelly.gong2.config.data.base.LList;
+import com.gamejelly.gong2.gas.entity.ServantEntity;
+import com.gamejelly.gong2.utils.*;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
+import com.gamejelly.gong2.config.data.base.LMap;
+import com.gamejelly.gong2.gas.entity.AvatarEntity;
+import com.gamejelly.gong2.meta.ItemModel;
+import com.gamejelly.gong2.vo.AvatarVO;
+import com.gamejelly.gong2.vo.InstanceChangeVO;
+import com.hadoit.game.common.lang.DataUtils;
+import com.hadoit.game.engine.guardian.utils.GuardianLogger;
+
+/**
+ * @author wcc
+ * @version V1.0
+ * @Title: ItemService.java
+ * @Package com.gamejelly.gong2.gas.service.user
+ * @Description: TODO(物品service)
+ * @date 2017年10月18日 下午8:05:58
+ */
+
+@Component("itemService")
+public class ItemService {
+
+
+    @Autowired
+    @Qualifier("servantService")
+    private ServantService servantService;
+
+    public boolean checkItemType(int templateId) {
+        LMap template = ItemData.data.getMap(templateId);
+        if (template == null) {
+            GuardianLogger.error("CheckItemType not exist! templateId=" + templateId);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 背包是否已满
+     *
+     * @param entity
+     * @param needCount 需要的格子
+     * @return true已满，false未满
+     */
+    private boolean checkBagIsFull(AvatarEntity entity, int needCount) {
+        int leftCount = entity.getBagLeftGridCount();
+        if (leftCount >= needCount) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public List<InstanceChangeVO> addItemOrCurrency(AvatarEntity entity, final int templateId, int count,
+                                                    int sourceType, int sourceId1, int sourceId2) {
+        LMap d = ItemData.data.getMap(templateId);
+        if (d != null && d.getInt("kind", 0) == SysConstData.data.getInt("ITEM_KIND_8")) {
+            if (templateId == GongConstants.ITEM_ID_MONEY) {
+                entity.addMoney(count, sourceType, sourceId1, sourceId2);
+            } else if (templateId == GongConstants.ITEM_ID_GOLD) {
+                entity.addFreeGold(count, sourceType);
+            } else if (templateId == GongConstants.ITEM_ID_LEIJI_GOLD) {
+                entity.addLeijiOnly(count);
+            } else {
+                entity.addCurrencyValue(templateId, count, sourceType, sourceId1, sourceId2);
+            }
+            return null;
+        }
+        return addItem(entity, templateId, count, sourceType, sourceId1, sourceId2);
+    }
+
+    public void addItem(AvatarEntity entity, ItemModel item, int sourceType, int sourceId1, int sourceId2) {
+        if (item == null) {
+            return;
+        }
+        entity.addItem(item);
+        GongLogger.logItemChange(entity, item.getCount(), item.getTemplateId(), item.getId(), sourceType, sourceId1,
+                sourceId2);
+    }
+
+    public List<InstanceChangeVO> addItem(AvatarEntity entity, final int templateId, int count, int sourceType,
+                                          int sourceId1, int sourceId2) {
+        if (!checkItemType(templateId)) {
+            return null;
+        }
+        LMap template = ItemData.data.getMap(templateId);
+        int kind = template.getInt("kind", 0);
+        List<ItemModel> tmpItems = entity.getItemsFromTemplateId(templateId);
+        boolean stack = template.getBool("stack");
+        List<InstanceChangeVO> ret = new ArrayList<InstanceChangeVO>();
+        InstanceChangeVO addIm = new InstanceChangeVO();
+        String instId = null;
+        if (stack && CollectionUtils.isNotEmpty(tmpItems)) {
+            // 可堆叠的永远只有一个
+            ItemModel aim = tmpItems.get(0);
+            aim.incrCount(count);
+            addIm.setUpdateList(Arrays.asList(aim));
+            instId = aim.getId();
+        } else {
+            boolean bagIsFull = false;
+            if (kind == SysConstData.data.getInt("ITEM_KIND_3")) {
+                // 装扮不存背包
+            } else {
+                if (checkBagIsFull(entity, template.getBool("stack") ? 1 : count)) {
+                    bagIsFull = true;
+                    // GongCommonNotify.notifyMsg(entity.getChannelContext(),
+                    // GongConstants.MSG_ID_BAG_IS_FULL);
+                }
+            }
+
+            List<ItemModel> adds = LogicUtils.createItem(templateId, count);
+            if (bagIsFull) {
+                // for (ItemModel itemModel : adds) {
+                // itemModel.setInTempBag(true);
+                // }
+            }
+            entity.addAllItem(adds);
+            addIm.setAddList(adds);
+        }
+
+        ret.add(addIm);
+        GongLogger.logItemChange(entity, count, templateId, instId, sourceType, sourceId1, sourceId2);
+        return ret;
+    }
+
+    public void removeItemByCount(AvatarEntity entity, String itemId, int count, int sourceType, int sourceId1,
+                                  int sourceId2) {
+        ItemModel im = entity.removeItemByCount(itemId, count);
+        if (im == null) {
+            GuardianLogger.warn("Item not exists! itemInstId=", itemId);
+            return;
+        }
+
+        GongLogger.logItemChange(entity, -count, im.getTemplateId(), itemId, sourceType, sourceId1, sourceId2);
+    }
+
+    public void removeItem(AvatarEntity entity, String itemId, int sourceType, int sourceId1, int sourceId2) {
+        ItemModel im = entity.removeItem(itemId);
+        if (im == null) {
+            GuardianLogger.warn("Item not exists! itemInstId=", itemId);
+            return;
+        }
+
+        GongLogger.logItemChange(entity, -1, im.getTemplateId(), itemId, sourceType, sourceId1, sourceId2);
+    }
+
+    public boolean notifyItemChanges(AvatarEntity entity, List<InstanceChangeVO> changes) {
+        if (changes != null && changes.size() > 0) {
+            List<InstanceChangeVO> imChanges = new ArrayList<InstanceChangeVO>();
+            for (InstanceChangeVO p : changes) {
+                imChanges.add(p);
+            }
+            doNotifyItemChanges(entity, imChanges, GongRpcConstants.RES_USER_ITEM_CHANGE);
+
+            return true;
+        }
+        return false;
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private void doNotifyItemChanges(AvatarEntity entity, List<InstanceChangeVO> changes, String op) {
+        if (CollectionUtils.isEmpty(changes)) {
+            return;
+        }
+        Set adds = new HashSet();
+        Set updates = new HashSet();
+        Set deletes = new HashSet();
+        for (InstanceChangeVO p : changes) {
+            if (p != null) {
+                if (p.getAddList() != null) {
+                    adds.addAll(p.getAddList());
+                }
+                if (p.getUpdateList() != null) {
+                    updates.addAll(p.getUpdateList());
+                }
+                if (p.getDeleteList() != null) {
+                    deletes.addAll(p.getDeleteList());
+                }
+            }
+        }
+        if (adds.size() > 0 || updates.size() > 0 || deletes.size() > 0) {
+            entity.notify(op, new InstanceChangeVO(adds, updates, deletes));
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<InstanceChangeVO> deductItem(AvatarEntity entity, int itemTemplateId, int count, int sourceType,
+                                             int sourceId1, int sourceId2) {
+        return deductItem(entity, itemTemplateId, count, (List<String>) Collections.EMPTY_LIST, sourceType, sourceId1,
+                sourceId2);
+    }
+
+    public List<InstanceChangeVO> deductItem(AvatarEntity entity, int itemTemplateId, int count,
+                                             List<String> ignoreItemList, int sourceType, int sourceId1, int sourceId2) {
+        if (!checkCanDeductItem(entity, itemTemplateId, count, ignoreItemList)) {
+            GongCommonNotify.notifyMsg(entity.getChannelContext(), GongConstants.MSG_ID_ITEM_NOT_ENOUGH);
+            return null;
+        }
+
+        return deductItemNoCheck(entity, itemTemplateId, count, ignoreItemList, sourceType, sourceId1, sourceId2);
+    }
+
+    public boolean checkCanDeductItem(AvatarEntity entity, int itemTemplateId, int count,
+                                      final List<String> ignoreItemList) {
+        List<ItemModel> items = entity.getItemsFromTemplateId(itemTemplateId);
+        if (CollectionUtils.isEmpty(items)) {
+            return false;
+        }
+
+        if (ignoreItemList != null) {
+            CollectionUtils.filter(items, new Predicate() {
+                @Override
+                public boolean evaluate(Object object) {
+                    ItemModel im = (ItemModel) object;
+                    return !ignoreItemList.contains(im.getId());
+                }
+            });
+        }
+        if (items.size() > 1) {
+            if (items.size() < count) {
+                return false; // 数量不够
+            }
+        } else {
+            ItemModel im = items.get(0);
+            if (im.getCount() < count) {
+                return false; // 数量不够
+            }
+        }
+        return true;
+    }
+
+    public List<InstanceChangeVO> deductItemNoCheck(AvatarEntity entity, int itemTemplateId, int count,
+                                                    final List<String> ignoreItemList, int sourceType, int sourceId1, int sourceId2) {
+        List<ItemModel> items = entity.getItemsFromTemplateId(itemTemplateId);
+
+        List<InstanceChangeVO> ret = new ArrayList<InstanceChangeVO>();
+        InstanceChangeVO dect = new InstanceChangeVO();
+        String instId = null;
+        if (ignoreItemList != null) {
+            CollectionUtils.filter(items, new Predicate() {
+                @Override
+                public boolean evaluate(Object object) {
+                    ItemModel im = (ItemModel) object;
+                    return !ignoreItemList.contains(im.getId());
+                }
+            });
+        }
+        if (items.size() > 1) {
+            List<String> delItemIds = new ArrayList<String>();
+            for (int i = 0; i < count; i++) {
+                ItemModel im = items.get(i);
+                delItemIds.add(im.getId());
+                entity.removeItem(im.getId());
+            }
+            dect.setDeleteList(delItemIds);
+        } else {
+            ItemModel im = items.get(0);
+            im.incrCount(-count);
+            if (im.getCount() <= 0) {
+                entity.removeItem(im.getId());
+                dect.setDeleteList(Arrays.asList(im.getId()));
+            } else {
+                dect.setUpdateList(Arrays.asList(im));
+            }
+            instId = im.getId();
+        }
+        ret.add(dect);
+
+        long curTime = System.currentTimeMillis();
+        if (sourceType > 0) {
+            GongLogger.logItemChange(entity, -count, itemTemplateId, instId, sourceType, sourceId1, sourceId2);
+        }
+
+        return ret;
+    }
+
+
+    public List<Integer[]> giveItemFromGift(AvatarEntity entity, int giftId, int value,
+                                            List<InstanceChangeVO> itemChanges, int sourceType) {
+        int useCount = value;
+        List<Integer[]> allAddedData = new ArrayList<Integer[]>();
+        LMap giftData = GiftData.data.getMap(giftId);
+        if (giftData == null) {
+            GuardianLogger.error("GiftData id not exist templateId=" + giftId);
+            return null;
+        }
+        int needItemTemplateId = giftData.getInt("needItem", 0);
+        if (giftData.getInt("openKind", 0) == 3) {
+            useCount = 1;
+            value--;// 客户端位置从1开始，这里需自减1
+        } else {
+            value = 0;
+        }
+        // 判断使用条件
+        if (needItemTemplateId > 0) {
+            // 存在依赖物品
+            int needItemCount = entity.getItemCountFromTemplateId(needItemTemplateId);
+            if (needItemCount >= useCount) {
+                List<InstanceChangeVO> r1 = deductItem(entity, needItemTemplateId, useCount, sourceType,
+                        needItemTemplateId, useCount);
+                if (r1 != null) {
+                    itemChanges.addAll(r1);
+                }
+            } else {
+                GongCommonNotify.notifyMsg(entity.getChannelContext(), GongConstants.MSG_ID_ITEM_NOT_ENOUGH);
+                return null;
+            }
+        }
+
+        // 使用物品
+        Map<Integer, Integer> bdData = entity.getAvatarModel().getBaodiData();
+        for (int uc = 0; uc < useCount; uc++) {
+            List<Integer[]> addedData = new ArrayList<Integer[]>();
+            int bdNum = giftData.getInt("bdNum", 0);
+            if (bdNum > 0) {
+                int bdCount = DataUtils.getMapInteger(bdData, giftId, 0) + 1;
+                GuardianLogger.info("giftId=" + giftId + ", bdCount=" + bdCount + ", bdNum=" + bdNum);
+                if (bdCount >= bdNum) {
+                    // 给保底, 并且把次数置为0
+                    int bdAward = (Integer) GongUtils.randomFromList(giftData.getList("bdAward"),
+                            giftData.getList("bdProb").toIntArray());
+                    itemChanges.addAll(addItemFromGroup(entity, bdAward, 1, addedData, sourceType, giftId, 0));
+                    bdData.put(giftId, 0);
+                } else {
+                    doGiveItemFromGift(entity, giftId, value, sourceType, addedData, itemChanges);
+                    List<Integer> bdpdAwards = GongUtils.getGiftPdAwardList(giftId);
+                    boolean bdpdSucc = false;
+                    for (Integer[] adi : addedData) {
+                        if (bdpdAwards.contains(adi[0])) {
+                            bdpdSucc = true;
+                            break;
+                        }
+                    }
+                    if (bdpdSucc) {
+                        // 这次抽到了所需物品, 次数置为0
+                        bdData.put(giftId, 0);
+                    } else {
+                        bdData.put(giftId, bdCount);
+                    }
+                }
+            } else {
+                doGiveItemFromGift(entity, giftId, value, sourceType, addedData, itemChanges);
+            }
+            allAddedData.addAll(addedData);
+        }
+
+        if (checkCanDeductItem(entity, giftId, useCount, null)) {
+            List<InstanceChangeVO> r2 = deductItem(entity, giftId, useCount, sourceType, giftId, useCount);
+            if (r2 != null) {
+                itemChanges.addAll(r2);
+            }
+        }
+
+        notifyItemChanges(entity, itemChanges);
+
+        LList randGoldList = giftData.getList("randGold");
+        if (randGoldList != null && randGoldList.size() > 0) {
+            Integer[] randPropList = giftData.getList("randGoldProb").toIntArray();
+            int randGotGold = 0; // 总元宝
+            for (int uc = 0; uc < useCount; uc++) {
+                int index = GongUtils.randomProb(randPropList);
+                LList actGoldGotList = (LList) randGoldList.get(index);
+                int goldStart = actGoldGotList.getInt(0, 0);
+                int goldEnd = actGoldGotList.getInt(1, 0);
+                int rgc = GongUtils.randomIntBetweenInclusive(goldStart, goldEnd);
+                randGotGold += rgc;
+            }
+
+            if (randGotGold > 0) {
+                allAddedData.add(new Integer[]{GongConstants.ITEM_ID_GOLD, randGotGold});
+                entity.addFreeGold(randGotGold, sourceType);
+            }
+        }
+
+        return allAddedData;
+    }
+
+
+    public void doGiveItemFromGift(AvatarEntity entity, int giftId, int specValue, int itemSoure,
+                                   List<Integer[]> addedData, List<InstanceChangeVO> itemChanges) {
+        LMap giftData = GiftData.data.getMap(giftId);
+        if (CollectionUtils.isEmpty(giftData.getList("groupId"))) {
+            return;
+        }
+        int idx = GongUtils.randomProb(giftData.getList("groupProb").toIntArray());
+        int groupTempalteId = giftData.getList("groupId").getInt(idx);
+        if (groupTempalteId <= 0) {
+            // 没有开出任何东西
+            return;
+        }
+        int openType = giftData.getInt("openKind");
+        if (openType == 1) {
+            itemChanges.addAll(addItemFromGroup(entity, groupTempalteId, -1, addedData, itemSoure, giftId, 0));
+        } else if (openType == 2) {
+            List<Object> retList = null;
+            boolean isBack = giftData.getBool("isBack", false);
+            int extractNum = giftData.getInt("extractNum", 1);
+            if (!isBack) {
+                retList = GongUtils.randomsDistinctFromList(giftData.getList("groupId"),
+                        giftData.getList("groupProb").toFloatArray(), extractNum);
+            } else {
+                retList = GongUtils.randomsFromList(giftData.getList("groupId"),
+                        giftData.getList("groupProb").toFloatArray(), extractNum);
+            }
+
+            if (CollectionUtils.isNotEmpty(retList)) {
+                for (int i = 0; i < retList.size(); i++) {
+                    groupTempalteId = (Integer) retList.get(i);
+                    itemChanges.addAll(addItemFromGroup(entity, groupTempalteId, 1, addedData, itemSoure, giftId, 0));
+                }
+            }
+        }
+        LList bideiItemList = giftData.getList("itemId");
+        LList bideiNumList = giftData.getList("num");
+        if (CollectionUtils.isNotEmpty(bideiItemList)) {
+            for (int i = 0; i < bideiItemList.size(); i++) {
+                LList numRange = bideiNumList.getList(i);
+                int num = GongUtils.randomIntBetweenInclusive(numRange.getInt(0), numRange.getInt(1));
+                addedData.add(new Integer[]{bideiItemList.getInt(i), num});
+                itemChanges.addAll(addItem(entity, bideiItemList.getInt(i), num, itemSoure, giftId, 0));
+            }
+        }
+
+    }
+
+    public List<InstanceChangeVO> addItemFromGroup(AvatarEntity entity, final int groupTemplateId, long count,
+                                                   List<Integer[]> addedData, int sourceType, int sourceId1, int sourceId2) {
+        LMap groupTemplate = ItemGroupData.data.getMap(groupTemplateId);
+        LList itemList = groupTemplate.getList("item");
+        LList itemCountList = groupTemplate.getList("num");
+
+        List<InstanceChangeVO> allChanges = new ArrayList<InstanceChangeVO>();
+        if (count == -1) {
+            // 增加物品组里的所有物品
+            for (int i = 0, len = itemList.size(); i < len; i++) {
+                List<InstanceChangeVO> r1 = doAddItemFromGroup(entity, groupTemplateId, itemList.getInt(i),
+                        itemCountList.getInt(i), addedData, sourceType, sourceId1, sourceId2);
+                if (r1 != null) {
+                    allChanges.addAll(r1);
+                }
+            }
+        } else {
+            // 按概率添加count个物品
+            for (int i = 0; i < count; i++) {
+                int index = GongUtils.randomProb(groupTemplate.getList("prob").toIntArray());
+                List<InstanceChangeVO> r1 = doAddItemFromGroup(entity, groupTemplateId, itemList.getInt(index),
+                        itemCountList.getInt(index), addedData, sourceType, sourceId1, sourceId2);
+                if (r1 != null) {
+                    allChanges.addAll(r1);
+                }
+            }
+        }
+
+
+        return allChanges;
+    }
+
+    /**
+     * addedData结构 [[模板ID, 数量, 标记1, 标记2], ...], 标记取以下常量 <br/>
+     * 标记1 是否门徒转化(1是, 0否) <br/>
+     *
+     * @param entity
+     * @param templateId
+     * @param count
+     * @param addedData
+     * @param sourceType
+     * @param sourceId1
+     * @param sourceId2
+     * @return
+     */
+    private List<InstanceChangeVO> doAddItemFromGroup(AvatarEntity entity, int groupTemplateId, final int templateId,
+                                                      int count, List<Integer[]> addedData, int sourceType, int sourceId1,
+                                                      int sourceId2) {
+        LMap template = ItemData.data.getMap(templateId);
+        if (template == null)
+            return null;
+        if (addedData != null) {
+            addedData.add(new Integer[]{templateId, count, 0, 0});
+        }
+        return addItemOrCurrency(entity, templateId, count, sourceType, sourceId1, sourceId2);
+    }
+
+
+    /**
+     * 根据掉落库ID发道具获取仆从
+     *
+     * @param entity
+     * @param dropStoreTempId
+     */
+
+    public void addItemOrServantFromDropStore(AvatarEntity entity, int dropStoreTempId) {
+
+        //返回 获得的道具,仆从
+
+
+        LMap dataTemp = DropStoreData.data.getMap(dropStoreTempId);
+        if (dataTemp == null) {
+            GuardianLogger.error("DropStoreData not exist id =", dropStoreTempId);
+            return;
+        }
+        //1.按概率随机1个   2.按概率依次判断掉落
+        int type = dataTemp.getInt("type");
+        //1.道具 2.武将 3.掉落库
+        int kind = dataTemp.getInt("kind");
+        if (type == 1) {
+            //按概率随机1个
+            int idx = GongUtils.randomProb(dataTemp.getList("probs").toIntArray());
+            if (idx > 0) {
+
+                int itemTemplateId = dataTemp.getList("items").getInt(idx);
+                int minCount, maxCount, itemCount = 0;
+
+                if (dataTemp.containsKey("itemNumMin") && dataTemp.containsKey("itemNumMax")) {
+                    minCount = dataTemp.getList("itemNumMin").getInt(idx);
+                    maxCount = dataTemp.getList("itemNumMax").getInt(idx);
+                    itemCount = GongUtils.randomIntBetweenInclusive(minCount, maxCount);
+                }
+
+                if (kind == 1) {
+                    //道具
+                    List<InstanceChangeVO> lstChangeVo = addItemOrCurrency(entity, itemTemplateId, itemCount,
+                            GongLogConstants.LOG_ITEM_CHANGE_ZHAOMU_SERVANT_REC, 0, 0);
+
+
+                } else if (kind == 2) {
+                    //武将
+                    //判断有没有当前武将
+                    LMap servantData = ServantData.data.getMap(itemTemplateId);
+                    if (servantData == null) {
+                        GuardianLogger.error("ServantData not exist id = ",itemTemplateId);
+                    }
+                    int pieceId = servantData.getInt("piece");
+                    ServantEntity servantEntity = entity.getServantByTempId(itemTemplateId);
+                    if (servantEntity != null) {
+                        //存在当前仆从就发仆从碎片
+                        List<InstanceChangeVO> lstChangeVo = addItemOrCurrency(entity, pieceId, itemCount,
+                                GongLogConstants.LOG_ITEM_CHANGE_ZHAOMU_SERVANT_REC, 0, 0);
+
+                    } else {
+                        //不存在发仆从
+                        servantService.addServant(entity, itemTemplateId, 0);
+                        int remainCount = itemCount - 1;
+
+                        if (remainCount > 0) {
+                            List<InstanceChangeVO> lstChangeVo = addItemOrCurrency(entity, pieceId, itemCount,
+                                    GongLogConstants.LOG_ITEM_CHANGE_ZHAOMU_SERVANT_REC, 0, 0);
+                        }
+
+                    }
+
+
+                } else if (kind == 3) {
+                    //掉落库
+                    LMap dataTempStore = DropStoreData.data.getMap(itemTemplateId);
+                    if (dataTempStore != null && dataTempStore.getInt("kind") != 3) {
+                        //掉落库只能嵌套一层
+                        addItemOrServantFromDropStore(entity, itemTemplateId);
+                    } else {
+                        GuardianLogger.error("DropStoreData addItemFromDropStore error itemTemplateId=", itemTemplateId);
+                    }
+                }
+
+            }
+
+
+        } else if (type == 2) {
+            //按概率依次判断掉落
+
+        }
+
+
+    }
+}

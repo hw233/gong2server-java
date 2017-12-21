@@ -1,0 +1,37 @@
+### direct log messages to stdout ###
+log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+log4j.appender.stdout.Target=System.out
+log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+log4j.appender.stdout.layout.ConversionPattern=%d [%t] %-5p %c{2} %x - %m%n
+
+### direct log messages to file ###
+log4j.appender.file_log=org.apache.log4j.DailyRollingFileAppender
+log4j.appender.file_log.File=logs/loginlog
+log4j.appender.file_log.Append=true
+log4j.appender.file_log.DatePattern='_'yyyy-MM-dd'.log'
+log4j.appender.file_log.layout=org.apache.log4j.PatternLayout
+log4j.appender.file_log.layout.ConversionPattern=[%d{yyyy-MM-dd HH:mm:ss}] %-4r [%t] %-5p %c{2} %x - %m%n
+
+log4j.rootLogger=info, stdout, file_log
+log4j.logger.com.gamejelly.game=info
+log4j.logger.login=info
+
+## pay logger
+log4j.logger.pay=info, pay_log
+log4j.additivity.pay=false
+log4j.appender.pay_log=org.apache.log4j.DailyRollingFileAppender
+log4j.appender.pay_log.File=logs/paylog
+log4j.appender.pay_log.Append=true
+log4j.appender.pay_log.DatePattern='_'yyyy-MM-dd'.log'
+log4j.appender.pay_log.layout=org.apache.log4j.PatternLayout
+log4j.appender.pay_log.layout.ConversionPattern=[%d{yyyy-MM-dd HH:mm:ss}] %-4r [%t] %-5p %c{2} %x - %m%n
+
+## client logger
+log4j.logger.client=info, client_log
+log4j.additivity.client=false
+log4j.appender.client_log=org.apache.log4j.DailyRollingFileAppender
+log4j.appender.client_log.File=logs/clientlog
+log4j.appender.client_log.Append=true
+log4j.appender.client_log.DatePattern='_'yyyy-MM-dd'.log'
+log4j.appender.client_log.layout=org.apache.log4j.PatternLayout
+log4j.appender.client_log.layout.ConversionPattern=[%d{yyyy-MM-dd HH:mm:ss}] %-4r [%t] %-5p %c{2} %x - %m%n

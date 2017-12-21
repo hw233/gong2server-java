@@ -1,0 +1,21 @@
+config.account_security_key=RRYa6li5NGFodgKUtvS1I6fZ
+
+config.admin_account=gongadmin
+config.admin_account_pass=gongadmin!@#890
+config.external_auth=false
+config.apple_review=false
+
+config.list_server_visible_ips=127.0.0.1, 10.10.*.*, 112.4.91.14, 47.90.66.100
+
+config.bad_update_res_version=100, 200
+
+# in_review_opr.size == in_review_client_version.size
+config.in_review_opr=ioschangba
+config.in_review_client_version=1.0.5
+
+
+
+#third pay oprGroupList
+config.third_pay_oprGroup_list=test,hd,ios,ios2,ios3,ios5,ios6
+
+config.opr_relation_list=test

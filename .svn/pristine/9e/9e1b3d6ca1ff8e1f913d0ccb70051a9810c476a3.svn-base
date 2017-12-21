@@ -1,0 +1,524 @@
+package com.gamejelly.gong2.gas.service.user;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import javax.annotation.Resource;
+
+import com.gamejelly.gong2.config.MessageConfig;
+import com.gamejelly.gong2.config.data.ConsumeData;
+import com.gamejelly.gong2.config.data.LeagueData;
+import com.gamejelly.gong2.config.data.SysConstData;
+import com.gamejelly.gong2.config.data.base.LMap;
+import com.gamejelly.gong2.gas.entity.AvatarEntity;
+import com.gamejelly.gong2.gas.entity.GongHuiEntity;
+import com.gamejelly.gong2.meta.GongHuiMemberModel;
+import com.gamejelly.gong2.meta.GongHuiModel;
+import com.gamejelly.gong2.meta.GongHuiMsgModel;
+import com.gamejelly.gong2.meta.share.AvatarTempValueModel;
+import com.gamejelly.gong2.utils.*;
+import com.gamejelly.gong2.vo.AvatarVO;
+import com.gamejelly.gong2.vo.GongHuiDataVO;
+import com.gamejelly.gong2.vo.GongHuiFubenDataVO;
+import com.gamejelly.gong2.vo.GongHuiRankVO;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
+import com.hadoit.game.common.lang.DataUtils;
+import com.hadoit.game.common.lang.Pair;
+import com.hadoit.game.common.lang.Triple;
+import com.hadoit.game.engine.core.rpc.simple.context.RpcResult;
+import com.hadoit.game.engine.guardian.gas.GasManager;
+import com.hadoit.game.engine.guardian.gas.entity.EntityCallback;
+import com.hadoit.game.engine.guardian.gas.entity.RawCommandCallback;
+import com.hadoit.game.engine.guardian.utils.GuardianLogger;
+@Component("gongHuiService")
+public class GongHuiService {
+    @Autowired
+    @Qualifier("gasManager")
+    private GasManager gasManager;
+
+    @Autowired
+    @Qualifier("messageService")
+    private MessageService messageService;
+
+    @Autowired
+    @Qualifier("fightService")
+    private FightService fightService;
+
+    @Autowired
+    @Qualifier("sceneService")
+    private SceneService sceneService;
+
+    @Autowired
+    @Qualifier("itemService")
+    private ItemService itemService;
+
+    @Autowired
+    @Qualifier("userService")
+    private UserService userService;
+
+    private List<GongHuiEntity> ghEntityList = new ArrayList<GongHuiEntity>();
+
+    private Map<Integer, GongHuiFubenDataVO> fubenMap = new LinkedHashMap<Integer, GongHuiFubenDataVO>();
+
+    private Map<Integer, List<GongHuiRankVO>> finishMap = new HashMap<Integer, List<GongHuiRankVO>>();
+
+    private boolean gonghuiMissionOpen = true;
+
+    //	@Resource
+    //	private EventBusAdapter eventBusAdapter;
+
+//    @Resource
+//    private HYDEventHandler hydEventHandler;
+//
+//    @Resource
+//    private HydService hydService;
+//
+//    @Resource
+//    private GangBossService gangBossService;
+
+    @Resource
+    private MonsterService monsterService;
+
+
+    @SuppressWarnings("unchecked")
+    public boolean enterGongHui(AvatarEntity owner) {
+        GongHuiModel ghModel = owner.getGongHuiModel(null);
+        if (ghModel == null) {
+            Object[] ob = loadGongHuiData(owner.getAvatarModel().getId());
+            List<GongHuiModel> applylist = (List<GongHuiModel>) ob[1];
+            owner.setGongHuiMap(applylist);
+            if ((Boolean) ob[0]) {
+                ghModel = applylist.get(0);
+                owner.notify(GongRpcConstants.RES_USER_GH_LOAD_OWNER, new GongHuiDataVO(owner, ghModel));
+                owner.notify(GongRpcConstants.RES_USER_FIGHT_GANG_BOSS, new Object[] { ghModel.getGangBossModel() });
+            } else {
+                searchGongHuiList(owner, null, 0);
+                return false;
+            }
+        } else {
+            owner.notify(GongRpcConstants.RES_USER_GH_LOAD_OWNER, new GongHuiDataVO(owner, ghModel));
+            owner.notify(GongRpcConstants.RES_USER_FIGHT_GANG_BOSS, new Object[] { ghModel.getGangBossModel() });
+        }
+        return true;
+    }
+
+
+    private Object[] loadGongHuiData(String avatarId) {
+        boolean r = false;
+        List<GongHuiModel> applylList = new ArrayList<GongHuiModel>();
+
+        for (GongHuiEntity ghEntity : ghEntityList) {
+            GongHuiModel ghModel = ghEntity.getGongHuiModel();
+            if (ghModel.isEnable()) {
+                for (GongHuiMemberModel mbModel : ghModel.getMemberList()) {
+                    if (mbModel.getAvatarId().equals(avatarId)) {
+                        if (mbModel.getState() == 1) {
+                            r = true;
+                            applylList.add(0, ghModel);
+                        } else {
+                            applylList.add(ghModel);
+                        }
+                    }
+                }
+            }
+        }
+
+        return new Object[] { r, applylList };
+    }
+
+    public boolean searchGongHuiList(final AvatarEntity owner, String name, int pages) {
+        int num = pages * SysConstData.data.getInt("LMXT_SQLB");
+        List<GongHuiDataVO> gongHuilist = new ArrayList<GongHuiDataVO>();
+        List<GongHuiEntity> gongHuiEntityList = new ArrayList<GongHuiEntity>(ghEntityList);
+
+        try {
+            Collections.sort(gongHuiEntityList, new Comparator<GongHuiEntity>() {
+                @Override
+                public int compare(GongHuiEntity o1, GongHuiEntity o2) {
+                    if (o1 == null || o2 == null) {
+                        return 0;
+                    }
+                    int memberState1 = 0;
+                    int memberState2 = 0;
+                    GongHuiModel ghA = o1.getGongHuiModel();
+                    GongHuiModel ghB = o2.getGongHuiModel();
+                    GongHuiMemberModel member1 = o1.getGongHuiModel().getMember(owner.getId());
+                    if (member1 != null && member1.getState() == 0) {
+                        memberState1 = 1;
+                    }
+                    GongHuiMemberModel member2 = o2.getGongHuiModel().getMember(owner.getId());
+                    if (member2 != null && member2.getState() == 0) {
+                        memberState2 = 1;
+                    }
+
+                    if (memberState1 == memberState2) {
+                        if (ghA.getLevel() == ghB.getLevel()) {
+                            return ghA.getCreateTime() == ghB.getCreateTime() ? 0
+                                    : (ghA.getCreateTime() > ghB.getCreateTime() ? 1 : -1);
+                        } else {
+                            return ghB.getLevel() == ghA.getLevel() ? 0 : (ghB.getLevel() > ghA.getLevel() ? 1 : -1);
+                        }
+
+                    } else {
+                        return memberState2 == memberState1 ? 0 : (memberState2 > memberState1 ? 1 : -1);
+                    }
+
+                }
+            });
+        } catch (Exception e) {
+            GuardianLogger.error(e);
+        }
+
+        if (StringUtils.isNotBlank(name)) {
+            int i = 0;
+            for (GongHuiEntity ghEntity : gongHuiEntityList) {
+                GongHuiModel ghModel = ghEntity.getGongHuiModel();
+                if (ghModel.getName().contains(name)) {
+                    if (i >= num) {
+                        gongHuilist.add(new GongHuiDataVO(owner, ghModel));
+                    }
+
+                    if (++i >= num + SysConstData.data.getInt("LMXT_SQLB")) {
+                        break;
+                    }
+                }
+            }
+        } else {
+            for (int i = num; i < num + SysConstData.data.getInt("LMXT_SQLB") && i < gongHuiEntityList.size(); i++) {
+                GongHuiModel ghModel = gongHuiEntityList.get(i).getGongHuiModel();
+                gongHuilist.add(new GongHuiDataVO(owner, ghModel));
+            }
+        }
+
+        if (gongHuilist.isEmpty() && StringUtils.isNotBlank(name)) {
+            GongCommonNotify.notifyMsg(owner.getChannelContext(), GongConstants.MSG_ID_GH_NO_RESULT);
+            return false;
+        }
+
+        owner.notify(GongRpcConstants.RES_USER_GH_LOAD_GONGHUI, gongHuilist);
+        return true;
+    }
+
+    /**
+     * 移除公会
+     */
+    public boolean removeGongHuiEntity(GongHuiEntity ghEntity) {
+        final GongHuiModel ghModel = ghEntity.getGongHuiModel();
+        for (Integer fbId : ghModel.getOpenFubenData().keySet()) {
+            List<GongHuiRankVO> rankList = finishMap.get(fbId);
+            GongHuiRankVO ret = (GongHuiRankVO) CollectionUtils.find(rankList, new Predicate() {
+                public boolean evaluate(Object object) {
+                    return ((GongHuiRankVO) object).getName().equals(ghModel.getName());
+                }
+            });
+            if (ret != null) {
+                rankList.remove(ret);
+            }
+        }
+        return ghEntityList.remove(ghEntity);
+    }
+
+    public void handleGonghuiMaintain(GongHuiEntity ghEntity) {
+        GongHuiModel ghModel = ghEntity.getGongHuiModel();
+        if (ghModel.isEnable()) {
+            LMap leagData = LeagueData.data.getMap(ghModel.getLevel());
+            if (leagData == null) {
+                return;
+            }
+            int maintainJinzhuan = leagData.getInt("maintainJinzhuan", 0);
+            LoggerHelper.infoParams("daily handleGonghuiWeihu ghName=", ghModel.getName(), ", decutJinZhuan=",
+                    maintainJinzhuan);
+            ghModel.incrGonghuiJinzhuan(-maintainJinzhuan);
+            addMessage(ghModel, MessageConfig.getCommonMsg(GongConstants.MSG_ID_GH_WEIFUFEI, maintainJinzhuan));
+        }
+    }
+
+
+
+    public void addMessage(GongHuiModel ghModel, String msg) {
+
+        msg = GongUtils.trimUnicode(msg); // 去掉Unicode字符
+        final String newMsg = StringUtils.trimToEmpty(DataUtils.toDBC(msg));
+        List<GongHuiMsgModel> messageList = ghModel.getMessageList();
+        messageList.add(new GongHuiMsgModel(newMsg, System.currentTimeMillis()));
+
+        if (msg.length() > 500) {
+            GuardianLogger.warn("gonghui addMessage length=", msg.length(), " size=", messageList.size(), " msg=", msg,
+                    " newMsg=", newMsg);
+        }
+
+        while (messageList.size() > 50) {
+            messageList.remove(0);
+        }
+
+        List<String> msgList = ghModel.getMsgList();
+        List<Long> msgTimeList = ghModel.getMsgTimeList();
+
+        for (GongHuiMemberModel member : ghModel.getMemberList()) {
+            if (member.getState() == 1 && member.isOnline()) {
+                AvatarEntity olEntity = (AvatarEntity) gasManager.getEntityManager().getEntity(member.getAvatarId());
+                if (olEntity != null) {
+                    olEntity.notify(GongRpcConstants.RES_USER_GH_LOAD_MESSAGE, new Object[] { msgList, msgTimeList });
+                }
+            }
+        }
+    }
+    /**
+     * 创建帮派
+     */
+    public void createGongHui(String name, int icon, final AvatarEntity owner, final RpcResult rpcResult) {
+        name = GongUtils.trimUnicode(name); // 去掉Unicode字符
+        name = StringUtils.trimToEmpty(DataUtils.toDBC(name)); // toDBC
+        if (owner.getGongHuiModel(null) != null) {
+            GongCommonNotify.notifyMsg(owner.getChannelContext(), GongConstants.MSG_ID_GH_ALREADY_JOINED_OTHER);
+            rpcResult.result(false);
+            return;
+        }
+
+        if (StringUtils.isBlank(name)) {
+            GongCommonNotify.notifyMsg(owner.getChannelContext(), GongConstants.MSG_ID_GH_NAME_NOT_NULL);
+            rpcResult.result(false);
+            return;
+        }
+
+        if (name.trim().length() > 5) {
+            GongCommonNotify.notifyMsg(owner.getChannelContext(), GongConstants.MSG_ID_GH_NAME_TOO_LONG);
+            rpcResult.result(false);
+            return;
+        }
+
+        if (GongUtils.checkTaboo(name)) {
+            GongCommonNotify.notifyMsg(owner.getChannelContext(), GongConstants.MSG_ID_GH_NAME_NOT_CONFORM);
+            rpcResult.result(false);
+            return;
+        }
+
+        if (checkNameOccupied(name)) {
+            GongCommonNotify.notifyMsg(owner.getChannelContext(), GongConstants.MSG_ID_GH_NAME_REPETITION);
+            rpcResult.result(false);
+            return;
+        }
+
+        if (icon == 0) {
+            GongCommonNotify.notifyMsg(owner.getChannelContext(), GongConstants.MSG_ID_GH_ICON_NOT_NULL);
+            rpcResult.result(false);
+            return;
+        }
+
+        final int consumeRmb = ConsumeData.data.getMap(GongConstants.CONSUME_ID_CRATE_GONGHUI).getList("consume")
+                .getInt(0);
+        if (!owner.canConsumeGold(consumeRmb)) {
+            // 钱不够
+            GongCommonNotify.notifyMsg(owner.getChannelContext(), GongConstants.MSG_ID_GOLD_NOT_ENOUGH);
+            rpcResult.result(false);
+            return;
+        }
+
+        LoggerHelper.info("create gongHui", null, name, icon);
+        final GongHuiModel ghModel = createGongHuiModel(name, icon, owner);
+        gasManager.getEntityManager().createEntityFromDb(GongHuiEntity.class, ghModel, null,
+                new EntityCallback<GongHuiEntity>() {
+                    @Override
+                    public void onResult(boolean r, GongHuiEntity entity) {
+                        if (r) {
+                            registerGongHuiEntity(entity);
+                            entity.writeToDB(); // 第一次创建需要保存下
+
+                            owner.getAvatarModel().setGongHuiId(entity.getGongHuiModel().getId());
+                            owner.getAvatarModel().setGongHuiName(ghModel.getName());
+                            owner.getAvatarModel().setGongHuiKjMaxLv(ghModel.getCangshugeLv());
+                            GongHuiMemberModel member = ghModel.getMember(owner.getAvatarModel().getId());
+                            if (member == null) {
+                                owner.getAvatarModel()
+                                        .setGongHuiPositon(String.valueOf(GongConstants.GONGHUI_POSITION_NO));
+                            } else {
+                                String strPosition = String.valueOf(member.getPosition());
+                                owner.getAvatarModel().setGongHuiPositon(strPosition);
+                            }
+
+                            entity.getGongHuiModel()
+                                    .incrGonghuiJinzhuan(SysConstData.data.getInt("GH_CREATE_GIVE_JINZHUAN", 0));
+
+                            owner.getAvatarModel().setLastExitGongHuiTime(0);
+                            owner.addGongHuiModel(entity.getGongHuiModel());
+                            owner.consumeGold(consumeRmb, GongLogConstants.LOG_GOLD_CHANGE_CREATE_GONGHUI, "");
+                            owner.notify(GongRpcConstants.RES_USER_GH_LOAD_OWNER, new GongHuiDataVO(owner, ghModel));
+                            owner.notify(GongRpcConstants.RES_USER_AVATAR_CHANGE, new AvatarVO(owner));
+                            rpcResult.result(true);
+                        } else {
+                            rpcResult.result(false);
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 检查名字
+     * */
+    private boolean checkNameOccupied(String name) {
+        boolean r = false;
+        for (GongHuiEntity ghEntity : ghEntityList) {
+            if (ghEntity.getGongHuiModel().getName().equalsIgnoreCase(name)) {
+                r = true;
+                break;
+            }
+        }
+        return r;
+    }
+
+    public void registerGongHuiEntity(GongHuiEntity ghEntity) {
+        clearMember(ghEntity.getGongHuiModel().getMemberList());
+        if (ghEntity.getGongHuiModel().isEnable()) {
+            this.ghEntityList.add(ghEntity);
+        }
+
+        AvatarEntity Leader = (AvatarEntity) gasManager.getEntityManager()
+                .getEntity(ghEntity.getGongHuiModel().getLeaderId());
+        if (Leader == null) {
+            GongHuiMemberModel member = ghEntity.getGongHuiModel().getMember(ghEntity.getGongHuiModel().getLeaderId());
+
+            ghEntity.startTransferTimer(member != null ? member.getLogoutTime() : 0);
+        }
+
+        ghEntity.startDisbandTimer(ghEntity.getGongHuiModel().getDismissTime());
+        ghEntity.startDailyTimer();
+        orderEntityList();
+        initFinishMap(ghEntity);
+        // initOrderMemberDamage(ghEntity);
+    }
+
+    private void clearMember(List<GongHuiMemberModel> memberList) {
+        long curTime = System.currentTimeMillis();
+        Iterator<GongHuiMemberModel> iter = memberList.iterator();
+        while (iter.hasNext()) {
+            GongHuiMemberModel member = iter.next();
+            if (member.getState() == 2) {
+                if (member.getExitTime() > 0
+                        && (curTime - member.getExitTime()) / 1000 > SysConstData.data.getInt("LMXT_CD")) {
+                    iter.remove();
+                }
+            } else if (member.getState() == 3) {
+                if (member.getExitTime() > 0
+                        && (curTime - member.getExitTime()) / 1000 > SysConstData.data.getInt("LMXT_CD")) {
+                    iter.remove();
+                }
+            }
+        }
+    }
+
+    /*
+	 * 根据联盟经验值从大到小排列
+	 */
+    private void orderEntityList() {
+        Collections.sort(ghEntityList, new Comparator<GongHuiEntity>() {
+            @Override
+            public int compare(GongHuiEntity o1, GongHuiEntity o2) {
+                if (o1 == null || o2 == null) {
+                    return 0;
+                }
+                int o1Lv = o1.getGongHuiModel().getLevel() - 1;
+                int o2Lv = o2.getGongHuiModel().getLevel() - 1;
+                long o1Exp = o1Lv > 0
+                        ? LeagueData.data.getMap(o1Lv).getInt("pxJinzhuan") + o1.getGongHuiModel().getGonghuiJinzhuan()
+                        : o1.getGongHuiModel().getGonghuiJinzhuan();
+
+                long o2Exp = o2Lv > 0
+                        ? LeagueData.data.getMap(o2Lv).getInt("pxJinzhuan") + o2.getGongHuiModel().getGonghuiJinzhuan()
+                        : o2.getGongHuiModel().getGonghuiJinzhuan();
+
+                return (int) (o2Exp - o1Exp);
+            }
+        });
+    }
+
+    private void initFinishMap(GongHuiEntity ghEntity) {
+        GongHuiModel ghModel = ghEntity.getGongHuiModel();
+        for (Integer fbId : ghModel.getOpenFubenData().keySet()) {
+            refreshFinishMap(ghModel, fbId);
+        }
+    }
+
+    private void refreshFinishMap(final GongHuiModel ghModel, int fbId) {
+        List<GongHuiRankVO> rankList = null;
+        if (!finishMap.containsKey(fbId)) {
+            finishMap.put(fbId, new ArrayList<GongHuiRankVO>());
+        }
+        rankList = finishMap.get(fbId);
+
+        GongHuiRankVO ret = (GongHuiRankVO) CollectionUtils.find(rankList, new Predicate() {
+            public boolean evaluate(Object object) {
+                return ((GongHuiRankVO) object).getName().equals(ghModel.getName());
+            }
+        });
+
+        if (ret == null) {
+            GongHuiRankVO rankVO = new GongHuiRankVO();
+            rankVO.setFbId(fbId);
+            rankVO.setGhId(ghModel.getId());
+            rankVO.setName(ghModel.getName());
+            rankVO.setLv(ghModel.getLevel());
+            rankVO.setCompletionTime(ghModel.getOpenFubenData().get(fbId));
+            rankList.add(rankVO);
+        } else {
+            ret.setCompletionTime(ghModel.getOpenFubenData().get(fbId));
+        }
+
+        Collections.sort(rankList, new Comparator<GongHuiRankVO>() {
+            @Override
+            public int compare(GongHuiRankVO o1, GongHuiRankVO o2) {
+                if (o1 == null || o2 == null) {
+                    return 0;
+                }
+
+                return ((Long) (o1.getCompletionTime() - o2.getCompletionTime())).intValue();
+            }
+        });
+
+    }
+
+    private GongHuiModel createGongHuiModel(String name, int icon, AvatarEntity owner) {
+        GongHuiModel ghModel = new GongHuiModel(name, icon, owner.getAvatarModel().getId(),
+                owner.getAvatarModel().getRoleName(),
+                MessageConfig.getCommonMsg(GongConstants.MSG_ID_GH_NOTICE_DEFAULT, name), owner.getId());
+        ghModel.setId(IdProvider.genId(GongConstants.ID_TYPE_GONGHUI));
+
+        long shiLi = 0;
+        AvatarTempValueModel avatarTempValueModel = owner.getAvatarTempValueModel(true);
+        if (avatarTempValueModel != null) {
+            shiLi = avatarTempValueModel.getShiLi();
+        }
+
+        GongHuiMemberModel mbModel = new GongHuiMemberModel(owner.getAvatarModel().getId(),
+                owner.getAvatarModel().getRoleName(), owner.getAvatarModel().getLv(), owner.getAvatarModel().getExp(),
+                owner.getAvatarModel().getZhanli(), owner.getAvatarModel().getLogoutTime(),
+                GongConstants.GONGHUI_POSITION_BANGZHU, 1, owner.getAvatarModel().getJob(),
+                owner.getAvatarModel().getGrade(), owner.getAvatarModel().getSex(), shiLi,
+                owner.getAvatarModel().getMaxZhanli());
+        mbModel.setJoinTime(System.currentTimeMillis());
+
+        List<GongHuiMemberModel> memberList = ghModel.getMemberList();
+        memberList.add(mbModel);
+        ghModel.setMemberList(memberList);
+
+//        initGongHuiMissionList(ghModel);
+
+        return ghModel;
+    }
+
+
+}
