@@ -122,7 +122,7 @@ public class AvatarModel extends BaseModel implements Cloneable {
 	 * 所属阵营
 	  */
 	private int camp;
-	
+
 	/**
 	 * 签名
 	 */
@@ -243,7 +243,7 @@ public class AvatarModel extends BaseModel implements Cloneable {
 	 * 好友未读消息提示 已读：0 未读：1
 	 */
 	private int isReadMsg;
-	
+
 	/**
 	 * 是否为机器人 否：0 是：1
 	 */
@@ -269,6 +269,24 @@ public class AvatarModel extends BaseModel implements Cloneable {
 	 * 抽良人CD时间
 	 */
 	private long secServantLiangRenCDTime;
+
+	/**
+	 * 建筑列表
+	 */
+	@Column(ignore = true)
+	private List<BuildingModel> buildingList = new ArrayList<BuildingModel>();
+
+
+	/**
+	 * 建筑库存数量 Map<模版ID, 数量>
+	 */
+	@Column(convertClazz = MapNumberOrStringColumnConvert.class, length = 65535)
+	private Map<Integer, Integer> buildingStore = new HashMap<>();
+
+	/**
+	 * 历史最高繁荣度
+	 */
+	private long maxProsperity;
 
 	public String getId() {
 		return id;
@@ -724,5 +742,28 @@ public class AvatarModel extends BaseModel implements Cloneable {
 
 	public void setCamp(int camp) {
 		this.camp = camp;
+	}
+	public List<BuildingModel> getBuildingList() {
+		return buildingList;
+	}
+
+	public void setBuildingList(List<BuildingModel> buildingList) {
+		this.buildingList = buildingList;
+	}
+
+	public Map<Integer, Integer> getBuildingStore() {
+		return buildingStore;
+	}
+
+	public void setBuildingStore(Map<Integer, Integer> buildingStore) {
+		this.buildingStore = buildingStore;
+	}
+
+	public long getMaxProsperity() {
+		return maxProsperity;
+	}
+
+	public void setMaxProsperity(long maxProsperity) {
+		this.maxProsperity = maxProsperity;
 	}
 }

@@ -5,6 +5,7 @@ import java.util.*;
 
 import com.gamejelly.gong2.config.data.*;
 import com.gamejelly.gong2.config.data.base.LList;
+import com.gamejelly.gong2.gas.annotation.TestInterface;
 import com.gamejelly.gong2.meta.CycleOperateModel;
 import com.gamejelly.gong2.utils.*;
 import com.hadoit.game.engine.core.rpc.simple.context.RpcResult;
@@ -24,6 +25,7 @@ import com.gamejelly.gong2.vo.ServantVO;
 import com.hadoit.game.common.lang.Pair;
 import com.hadoit.game.engine.guardian.utils.GuardianLogger;
 
+@TestInterface
 @Component("servantService")
 public class ServantService {
 
@@ -326,7 +328,8 @@ public class ServantService {
      * @param usePropType  使用道具方式: 1 按免费次数 2 使用道具 3 使用元宝
      * @return
      */
-    public void servantZhaoMu(final RpcResult rpcResult, AvatarEntity avatarEntity, int zhaoMuType, int usePropType) {
+    @TestInterface(123)
+    public void servantZhaoMu(AvatarEntity avatarEntity,final RpcResult rpcResult, int zhaoMuType, int usePropType) {
         if (zhaoMuType == 1) {
 
             zhaoMuLiangRen(rpcResult, avatarEntity, usePropType);

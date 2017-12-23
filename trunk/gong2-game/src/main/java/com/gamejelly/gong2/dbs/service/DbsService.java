@@ -165,10 +165,6 @@ public class DbsService {
 		return avatarModelDao.getColumnByCondition("roleName = ? limit 1", "id", roleName);
 	}
 
-	public String getAvatarUIdByRole(String roleName) {
-		return avatarModelDao.getColumnByCondition("roleName = ? limit 1", "uid", roleName);
-	}
-
 	public Integer checkCanCreateRole(String accountName, int serverId, String roleName) {
 		// 检测重名
 		Long id = avatarModelDao.getColumnByCondition("roleName = ? limit 1", "id", roleName);
@@ -439,13 +435,9 @@ public class DbsService {
 		}
 	}
 	
-	public List<SimplePlayerInfo> searchByName(String key, int page, int limit, String avatarId) {
-		int offset = (page-1) * limit;
-		List<AvatarModel> avatarModelList = avatarModelDao.getListByCondition("roleName like CONCAT('%', CONCAT(?, '%'))  and uid != ? and robotId = 0", limit, offset, key, avatarId);
-//		if (CollectionUtils.isEmpty(avatarModelList) && StringUtils.isNumeric(key)) {
-//			// 可能输入的是gbid
-//			avatarModelList = avatarModelDao.getListByFullCondition("gbId = ?", Long.valueOf(key));
-//		}
+	public List<SimplePlayerInfo> searchByNameOrUid(String key, String avatarId) {
+		String condition = "(roleName like CONCAT(?, '%') or uid = ?) and uid != ? and robotId = 0";
+		List<AvatarModel> avatarModelList = avatarModelDao.getListByFullCondition(condition, key, key, avatarId);
 		if (CollectionUtils.isEmpty(avatarModelList)) {
 			return Collections.emptyList();
 		}

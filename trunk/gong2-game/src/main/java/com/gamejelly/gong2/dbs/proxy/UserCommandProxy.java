@@ -58,11 +58,6 @@ public class UserCommandProxy implements DbsCommandProxy {
 		return new RawCommandResult(dbsService.getAvatarIdByRole(roleName));
 	}
 
-	@CommandRpc(fullAlias = GongDbConstants.CMD_GET_AVATAR_UID_BY_ROLE) 
-	public RawCommandResult getAvatarUIdByRoleName(String roleName) {
-		return new RawCommandResult(dbsService.getAvatarUIdByRole(roleName));
-	}
-	
 	@CommandRpc(fullAlias = GongDbConstants.CMD_GET_SHARED_DATA, unpack = true)
 	public RawCommandResult getSharedData() {
 		LoggerHelper.info("getSharedData", null);
@@ -142,9 +137,9 @@ public class UserCommandProxy implements DbsCommandProxy {
 		return new RawCommandResult(dbsService.rejectJiejiao(avatarId, fromAvatarId));
 	}
 	
-	@CommandRpc(fullAlias = GongDbConstants.CMD_SEARCH_BY_NAME, unpack = true) 
-	public RawCommandResult searchPlay(String key, int page, int count, String avatarId) {
-		return new RawCommandResult(dbsService.searchByName(key, page, count, avatarId));
+	@CommandRpc(fullAlias = GongDbConstants.CMD_SEARCH_BY_NAME_OR_UID, unpack = true) 
+	public RawCommandResult searchPlay(String key, String avatarId) {
+		return new RawCommandResult(dbsService.searchByNameOrUid(key, avatarId));
 	}
 	
 	@CommandRpc(fullAlias = GongDbConstants.CMD_GET_JIEJIAO_LIST, unpack = true)

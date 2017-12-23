@@ -26,7 +26,7 @@ public class GongDbConstants {
 	public static final String CMD_GET_JIEJIAO_LIST = "ar.getJiejiaoList";
 	public static final String CMD_ADD_USER_MESSAGE = "ar.addUserMessage";
 	public static final String CMD_ADD_ALL_USER_MESSAGE = "ar.addAllUserMessage";
-	public static final String CMD_SEARCH_BY_NAME = "ar.searchByName";
+	public static final String CMD_SEARCH_BY_NAME_OR_UID = "ar.searchByNameOrUid";
 	public static final String CMD_SEARCH_PLAYER_LIST = "ar.searchPlayerList";
 	public static final String CMD_GET_RECENT_CONTACT = "ar.getRecentContact";
 	public static final String CMD_GET_SILIAO_CHAT = "ar.getSiliaoChat";
@@ -39,4 +39,5 @@ public class GongDbConstants {
 
 
 
+    public static final String CMD_FIND_BUILDING_LIST_BY_PARENT_ID = "findBuildingListByParentId";
 }

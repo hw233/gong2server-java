@@ -24,7 +24,8 @@ var USER_GROUP_GOD = GongConstants.USER_GROUP_GOD;
 exports.init = function() {
 //	gm_cmd.reg(setAotState, "$setAotState", "", "设置aot开关", USER_GROUP_DEV);
 //	gm_cmd.reg(nextMainMission, "$nextMainMission", "", "跳过主线任务", USER_GROUP_DEV);
-	gm_cmd.reg(addGold, "$addYb", "数量", "增加元宝", USER_GROUP_DEV);
+    gm_cmd.reg(testInterface, "testInterface", "", "测试接口(后端使用)",USER_GROUP_DEV);
+    gm_cmd.reg(addGold, "$addYb", "数量", "增加元宝", USER_GROUP_DEV);
 	gm_cmd.reg(addItem, "$addItem", "id, 数量", "增加物品", USER_GROUP_DEV);
 	gm_cmd.reg(addExp, "$addJy", "数量", "增加经验", USER_GROUP_DEV);
 	gm_cmd.reg(addMoney, "$addYl", "数量", "增加银两", USER_GROUP_DEV);
@@ -437,4 +438,6 @@ function setAotState(entity) {
 
 function nextMainMission(entity) {
 	gmService.nextMainMission(entity)
+}
+function testInterface(entity,value){
 }

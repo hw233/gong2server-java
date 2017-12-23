@@ -7,34 +7,22 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.gamejelly.gong2.config.data.*;
 import com.gamejelly.gong2.gas.service.shared.SharedDataService;
+import com.gamejelly.gong2.meta.*;
+import com.gamejelly.gong2.meta.share.AvatarTempValueModel;
+import com.gamejelly.gong2.utils.*;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Maps;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
 
-import com.gamejelly.gong2.config.data.ExpLvData;
-import com.gamejelly.gong2.config.data.InitData;
-import com.gamejelly.gong2.config.data.SysConstData;
-import com.gamejelly.gong2.config.data.VipData;
 import com.gamejelly.gong2.config.data.base.LList;
 import com.gamejelly.gong2.config.data.base.LMap;
 import com.gamejelly.gong2.gas.service.user.ItemService;
 import com.gamejelly.gong2.gas.service.user.UserService;
-import com.gamejelly.gong2.meta.AvatarModel;
-import com.gamejelly.gong2.meta.GongHuiMemberModel;
-import com.gamejelly.gong2.meta.share.AvatarTempValueModel;
-import com.gamejelly.gong2.meta.GongHuiModel;
-import com.gamejelly.gong2.meta.CycleOperateModel;
-import com.gamejelly.gong2.meta.GuankaModel;
-import com.gamejelly.gong2.meta.ItemModel;
-import com.gamejelly.gong2.meta.ServantModel;
-import com.gamejelly.gong2.utils.GongLogConstants;
-import com.gamejelly.gong2.utils.GongLogger;
-import com.gamejelly.gong2.utils.GongRpcConstants;
-import com.gamejelly.gong2.utils.GongRuntimeException;
-import com.gamejelly.gong2.utils.GongUtils;
-import com.gamejelly.gong2.utils.LogicUtils;
 import com.gamejelly.gong2.vo.AvatarVO;
 import com.gamejelly.gong2.vo.ServantVO;
 import com.hadoit.game.common.lang.DataUtils;
@@ -55,7 +43,12 @@ public class AvatarEntity extends Entity {
 
 	private Map<Integer, GuankaModel> guankaMap;
 
+	private Map<String, BuildingModel> buildingMap;
+
+
+	private long prosperity;
 	private Map<String, GongHuiModel> gongHuiMap;
+
 
 	private boolean wudi;
 	
@@ -180,7 +173,7 @@ public class AvatarEntity extends Entity {
 		if (ret.getSecond() != null) {
 			entity.addAllItem(ret.getSecond());
 		}
-
+		BuildingUtils.initBuilding(entity);
 	}
 
 	public void initDataAfterCreateAvatarModel(AvatarEntity entity) {
@@ -213,6 +206,21 @@ public class AvatarEntity extends Entity {
 			guankaMap.put(gkm.getTemplateId(), gkm);
 		}
 		gongHuiMap=new HashMap<String, GongHuiModel>();
+
+		buildingMap = Maps.newHashMap();
+		long totalProsperity = 0;
+		for (BuildingModel buildingModel : getAvatarModel().getBuildingList()) {
+			buildingMap.put(buildingModel.getId(), buildingModel);
+			LMap template = buildingModel.getTemplate();
+			if (template == null) {
+				GuardianLogger.error("building templateId not exist! templateId=" + buildingModel.getTemplateId());
+				continue;
+			}
+
+			long curBuildProsperity = template.getInt("prosperity", 0);
+			totalProsperity = totalProsperity + curBuildProsperity;
+		}
+		initTiledCollisionData();
 	}
 
 	/**
@@ -809,6 +817,339 @@ public class AvatarEntity extends Entity {
 	public Map<String, GongHuiModel> getGongHuiMap() {
 		return gongHuiMap;
 	}
+	public void addBuilding(BuildingModel bm) {
+		if (bm == null) {
+			return;
+		}
+		buildingMap.put(bm.getId(), bm);
+		getAvatarModel().getBuildingList().add(bm);
+	}
+
+	public BuildingModel getBuildingById(String id) {
+		return buildingMap.get(id);
+	}
+
+
+	public int getBuildingCountByTemplateId(int templateId) {
+		int count = 0;
+		for (Map.Entry<String, BuildingModel> entry : buildingMap.entrySet()) {
+			if (entry.getValue().getTemplateId() == templateId) {
+				count++;
+			}
+		}
+
+		return count;
+	}
+
+	public Map<String, BuildingModel> getBuildingMap() {
+		return buildingMap;
+	}
+
+	public void setBuildingMap(Map<String, BuildingModel> buildingMap) {
+		this.buildingMap = buildingMap;
+	}
+
+	public long getProsperity() {
+		return prosperity;
+	}
+
+	public void setProsperity(long prosperity) {
+		this.prosperity = prosperity;
+	}
+	public BuildingModel removeBuilding(String buildingId) {
+		if (buildingMap.containsKey(buildingId)) {
+			BuildingModel bm = buildingMap.remove(buildingId);
+			getAvatarModel().getBuildingList().remove(bm);
+			return bm;
+		}
+		return null;
+	}
+
+	public List<BuildingModel> getBuildListFromOwnerBuilding(final String buildingId) {
+		@SuppressWarnings("unchecked")
+		List<BuildingModel> ret = (List<BuildingModel>) CollectionUtils.select(buildingMap.values(), new Predicate() {
+			@Override
+			public boolean evaluate(Object object) {
+
+				BuildingModel bm = (BuildingModel) object;
+				return (StringUtils.isNotBlank(bm.getOwnerBuildingId())
+						&& StringUtils.equals(bm.getOwnerBuildingId(), buildingId));
+			}
+		});
+
+		return ret;
+	}
+	public List<BuildingModel> getBuildingList() {
+
+		return getAvatarModel().getBuildingList();
+	}
+
+	private Map<String, Boolean> tiledCollisionMap;
+
+
+	public void setBuildingTiledCollisionData(BuildingModel bm, boolean clear) {
+
+		if (bm == null) {
+			return;
+		}
+
+		int x = bm.getX();
+		int y = bm.getY();
+
+		int width = 0;
+		int height = 0;
+		Integer[] size = bm.getBuildingSize();
+		if (size != null) {
+			if (!bm.isFlip()) {
+				width = size[0];
+				height = size[1];
+			} else {
+				width = size[1];
+				height = size[0];
+			}
+		}
+
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				int tempX = x - i;
+				int tempY = y - j;
+
+				String key = getTiledKey(tempX, tempY);
+				tiledCollisionMap.put(key, clear);
+			}
+		}
+	}
+
+
+	private void initTiledCollisionData() {
+		int tiledSideLen = SysConstData.data.getInt("TILED_SIDE_LEN",50);
+		tiledCollisionMap = new HashMap<String, Boolean>();
+		for (int i = 0; i < tiledSideLen; i++) {
+			for (int j = 0; j < tiledSideLen; j++) {
+				String key = getTiledKey(i, j);
+				int index = j * tiledSideLen + i;
+				if (tiledData[index] == SysConstData.data.getInt("TILED_CAN_BUILD",3)) {
+					tiledCollisionMap.put(key, true);
+				} else {
+					tiledCollisionMap.put(key, false);
+				}
+			}
+		}
+
+		for (Map.Entry<String, BuildingModel> entry : buildingMap.entrySet()) {
+			setBuildingTiledCollisionData(entry.getValue(), false);
+		}
+	}
+
+
+	// 地图相关
+	private static int tiledData[] = { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+			2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+			2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+			2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+			2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2,
+			2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+			2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2,
+			2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+			2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 };
+
+	public static void main(String[] args) {
+		System.out.println(tiledData.length);
+	}
+
+
+	public String getTiledKey(int x, int y) {
+
+		return String.valueOf(x) + "_" + String.valueOf(y);
+	}
+
+	public boolean getTiledCollisionState(String key) {
+		return tiledCollisionMap.get(key);
+	}
+
+	/**
+	 * 增加库存内建筑数量
+	 * @param key 建筑模板id
+	 * @param incr 增加的数量
+	 */
+	public void addBuildingToBuildingStore(int key, int incr) {
+		int oldVal = DataUtils.getMapInteger(getAvatarModel().getBuildingStore(), key, 0);
+		oldVal += incr;
+		getAvatarModel().getBuildingStore().put(key, oldVal);
+	}
+
+	/**
+	 * 检测库存内建筑数量是否够用
+	 * @param key 建筑模板id
+	 * @param sub 检查数量
+	 * @return
+	 */
+	public boolean canUseBuildingFromBuildingStore(int key, int sub) {
+		long oldVal = DataUtils.getMapInteger(getAvatarModel().getBuildingStore(), key, 0);
+		return oldVal >= sub;
+	}
+
+	/**
+	 * 使用指定模板id的数量
+	 * @param key
+	 * @param v
+	 * @return
+	 */
+	public boolean useBuildingFromBuildingStore(int key, int v) {
+		long oldVal = DataUtils.getMapInteger(getAvatarModel().getBuildingStore(), key, 0);
+		if (oldVal < v) {
+			return false;
+		}
+		addBuildingToBuildingStore(key, -v);
+		return true;
+	}
+
+	public List<BuildingModel> getBuildingsByTemplateId(final int templateId) {
+		List<BuildingModel> buildingList = getBuildingList();
+
+		Collection<BuildingModel> filter = Collections2.filter(buildingList, new com.google.common.base.Predicate<BuildingModel>() {
+			@Override
+			public boolean apply(BuildingModel buildingModel) {
+				return buildingModel.getTemplateId() == templateId;
+			}
+		});
+		return new ArrayList<>(filter);
+	}
+
+	/**
+	 * 临时繁荣度变化
+	 * @param key
+	 * @param increaseValue
+	 */
+	public void increaseTemporaryProsperity(int key, long increaseValue) {
+
+		AvatarTempValueModel avatarTempValueModel = getAvatarTempValueModel(true);
+		if (avatarTempValueModel == null) {
+			return;
+		}
+
+		long oldVal = DataUtils.getMapInteger(avatarTempValueModel.getBuildTempProsperity(), key, 0);
+		oldVal += increaseValue;
+		if (oldVal < 0) {
+			// 可以有负值
+			// oldVal = 0;
+		}
+		avatarTempValueModel.getBuildTempProsperity().put(key, oldVal);
+	}
+
+	/**
+	 * 固定繁荣度
+	 * @param val
+	 */
+	public void increaseGuDingProsperity(long val) {
+		AvatarTempValueModel avatarTempValueModel = getAvatarTempValueModel(true);
+		if (avatarTempValueModel == null) {
+			return;
+		}
+
+		long oldValue = avatarTempValueModel.getGudingProsperity();
+		long newValue = oldValue + val;
+		avatarTempValueModel.setGudingProsperity(GongUtils.adjustNumberInRange(newValue, 0, Long.MAX_VALUE));
+	}
+
+	public void increaseProsperity(long val, int type) {
+		long oldValue = getProsperity();
+		long newValue = oldValue + val;
+
+		if (newValue > oldValue) {
+			getAvatarModel().setMaxProsperity(newValue);
+		}
+
+		if (type == GongConstants.PROSPERITY_TYPE_GUDING_1) {
+			// 记录固定繁荣度
+			increaseGuDingProsperity(val);
+		}
+
+		setProsperity(GongUtils.adjustNumberInRange(getProsperity() + val, 0, Long.MAX_VALUE));
+	}
+
+	public boolean canConsumeMoney(long v) {
+		if (v < 0) {
+			return false;
+		}
+
+		return getAvatarModel().getMoney() >= v;
+	}
+
+	public boolean consumeMoney(long v, int sourceType, int sourceId1, int sourceId2) {
+		if (v < 0) {
+			throw new GongRuntimeException("!!!消费money异常 v=" + v);
+		}
+		long money = getAvatarModel().getMoney();
+		if (money < v) {
+			return false;
+		}
+		getAvatarModel().incrMoney(-v);
+		GongLogger.logMoneyChange(this, money, sourceType, sourceId1, sourceId2);
+		return true;
+	}
+
 
 
 }

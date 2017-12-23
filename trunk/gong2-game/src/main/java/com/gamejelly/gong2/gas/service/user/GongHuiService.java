@@ -100,7 +100,7 @@ public class GongHuiService {
         GongHuiModel ghModel = owner.getGongHuiModel(null);
         if(Arrays.binarySearch(GongConstants.GROUP_LIST,owner.getAvatarModel().getCamp())<0)
         {
-            GongCommonNotify.notifyMsg(owner.getChannelContext(), GongConstants.MSG_ID_AVATAR_UNBIND_GROUP);
+//            GongCommonNotify.notifyMsg(owner.getChannelContext(), GongConstants.MSG_ID_AVATAR_UNBIND_GROUP);
             return false;
         }
         if (ghModel == null) {

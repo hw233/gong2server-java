@@ -3,13 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="a91a1a1f-699d-4120-8b03-5aa0ee16227e" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$" afterPath="$PROJECT_DIR$" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/entity/ServantEntity.java" afterPath="$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/entity/ServantEntity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/proxy/UserProxy.java" afterPath="$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/proxy/UserProxy.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/service/user/ItemService.java" afterPath="$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/service/user/ItemService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/service/user/ServantService.java" afterPath="$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/service/user/ServantService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/meta/AvatarModel.java" afterPath="$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/meta/AvatarModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/utils/GongLogConstants.java" afterPath="$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/utils/GongLogConstants.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/utils/GongUtils.java" afterPath="$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/utils/GongUtils.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/utils/GongLogConstants.java" afterPath="$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/utils/GongLogConstants.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/service/user/ItemService.java" afterPath="$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/service/user/ItemService.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/entity/ServantEntity.java" afterPath="$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/entity/ServantEntity.java" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -40,80 +37,91 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="ServantService.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/service/user/ServantService.java">
+      <file leaf-file-name="GmProxy.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/proxy/GmProxy.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="351">
-              <caret line="624" column="9" lean-forward="true" selection-start-line="624" selection-start-column="9" selection-end-line="624" selection-end-column="9" />
-              <folding>
-                <element signature="e#13029#13047#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ItemData.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/config/data/ItemData.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="246">
-              <caret line="210" column="59" lean-forward="true" selection-start-line="210" selection-start-column="59" selection-end-line="210" selection-end-column="59" />
+            <state relative-caret-position="-169">
+              <caret line="133" column="53" lean-forward="false" selection-start-line="133" selection-start-column="53" selection-end-line="133" selection-end-column="53" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ServantData.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/config/data/ServantData.java">
+      <file leaf-file-name="GasApp.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/GasApp.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="302">
-              <caret line="64" column="0" lean-forward="false" selection-start-line="64" selection-start-column="0" selection-end-line="64" selection-end-column="0" />
-              <folding>
-                <marker date="1513590246000" expanded="true" signature="24919:24934" ph="{...}" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ItemService.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/service/user/ItemService.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="303">
-              <caret line="124" column="53" lean-forward="false" selection-start-line="124" selection-start-column="53" selection-end-line="124" selection-end-column="53" />
-              <folding>
-                <element signature="e#3829#3847#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="LogicUtils.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/utils/LogicUtils.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-32">
-              <caret line="77" column="32" lean-forward="true" selection-start-line="77" selection-start-column="32" selection-end-line="77" selection-end-column="32" />
+            <state relative-caret-position="287">
+              <caret line="31" column="22" lean-forward="false" selection-start-line="31" selection-start-column="22" selection-end-line="31" selection-end-column="22" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GongUtils.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/utils/GongUtils.java">
+      <file leaf-file-name="DataUtils.class" pinned="false" current-in-tab="false">
+        <entry file="jar://$PROJECT_DIR$/lib/game-common-lang-1.1.6.jar!/com/hadoit/game/common/lang/DataUtils.class">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="288">
-              <caret line="1183" column="27" lean-forward="true" selection-start-line="1183" selection-start-column="27" selection-end-line="1183" selection-end-column="27" />
-              <folding>
-                <element signature="e#37927#37945#0" expanded="true" />
-                <element signature="e#38004#38013#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="191">
+              <caret line="581" column="62" lean-forward="false" selection-start-line="581" selection-start-column="62" selection-end-line="581" selection-end-column="62" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GongRpcConstants.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/utils/GongRpcConstants.java">
+      <file leaf-file-name="ClassLoader.java" pinned="false" current-in-tab="false">
+        <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.7.0_71.jdk/Contents/Home/src.zip!/java/lang/ClassLoader.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="157">
-              <caret line="137" column="55" lean-forward="false" selection-start-line="137" selection-start-column="31" selection-end-line="137" selection-end-column="55" />
+            <state relative-caret-position="166">
+              <caret line="1302" column="23" lean-forward="false" selection-start-line="1302" selection-start-column="23" selection-end-line="1302" selection-end-column="23" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ReflectionUtils.class" pinned="false" current-in-tab="false">
+        <entry file="jar://$PROJECT_DIR$/lib/game-common-lang-1.1.6.jar!/com/hadoit/game/common/lang/ReflectionUtils.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="174">
+              <caret line="39" column="30" lean-forward="false" selection-start-line="39" selection-start-column="30" selection-end-line="39" selection-end-column="30" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="GuardianContainer.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/hadoit/game/engine/guardian/core/GuardianContainer.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="181">
+              <caret line="202" column="78" lean-forward="false" selection-start-line="202" selection-start-column="78" selection-end-line="202" selection-end-column="78" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MethodRpcHandlerSupport.class" pinned="false" current-in-tab="false">
+        <entry file="jar://$PROJECT_DIR$/lib/game-engine-core-2.2.25.jar!/com/hadoit/game/engine/core/rpc/base/handler/MethodRpcHandlerSupport.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="158">
+              <caret line="43" column="58" lean-forward="false" selection-start-line="43" selection-start-column="58" selection-end-line="43" selection-end-column="58" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="application-context-gas.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/resources/gas/application-context-gas.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-78">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="application-context-gas-service.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/resources/gas/application-context-gas-service.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="170">
+              <caret line="10" column="30" lean-forward="false" selection-start-line="10" selection-start-column="30" selection-end-line="10" selection-end-column="30" />
               <folding />
             </state>
           </provider>
@@ -122,32 +130,12 @@
       <file leaf-file-name="UserProxy.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/proxy/UserProxy.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="303">
-              <caret line="568" column="33" lean-forward="false" selection-start-line="568" selection-start-column="33" selection-end-line="568" selection-end-column="33" />
+            <state relative-caret-position="154">
+              <caret line="143" column="0" lean-forward="false" selection-start-line="143" selection-start-column="0" selection-end-line="143" selection-end-column="0" />
               <folding>
-                <marker date="1513845277000" expanded="false" signature="37791:37929" ph="(result, num, error) → {" />
-                <marker date="1513845277000" expanded="false" signature="38175:38198" ph="}" />
+                <element signature="imports" expanded="true" />
+                <marker date="1513995406000" expanded="true" signature="36362:36387" ph="{...}" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GongConstants.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/utils/GongConstants.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="419" column="0" lean-forward="true" selection-start-line="419" selection-start-column="0" selection-end-line="419" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AvatarVO.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/vo/AvatarVO.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="285">
-              <caret line="130" column="5" lean-forward="false" selection-start-line="130" selection-start-column="5" selection-end-line="130" selection-end-column="5" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -163,36 +151,36 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>loginAvatar</find>
-      <find>avatar</find>
-      <find>zhaom</find>
-      <find>SAY_MSG_WORLD</find>
-      <find>sendJiejiaoMsg</find>
-      <find>SERVANT_PROP_TYPE_1</find>
-      <find>servantUpgrade</find>
-      <find>giveItemFromGift</find>
-      <find>doAddItemFromGroup</find>
-      <find>addItemOr</find>
-      <find>randomProb</find>
-      <find>templateId</find>
-      <find>addItemOrCurrency</find>
-      <find>group</find>
-      <find>Object</find>
-      <find>a</find>
-      <find>SEC_LIANG_REN_FREE_NUM</find>
-      <find>setGongHuiMap</find>
-      <find>addGongHuiModel</find>
       <find>gonghuim</find>
       <find>clear</find>
       <find>toString</find>
       <find>put</find>
       <find>getItemOrServantFromDropStore</find>
       <find>zhao</find>
-      <find>servantZhaoMu</find>
       <find>getVipValue</find>
-      <find>canConsumeGold</find>
       <find>gongHuiMap =</find>
       <find>addite</find>
+      <find>GuankaNanduData</find>
+      <find>servantZhaoMu</find>
+      <find>canConsumeGold</find>
+      <find>fightGuank</find>
+      <find>addGuanka</find>
+      <find>fightMonster</find>
+      <find>testInterface</find>
+      <find>setApplicationContext</find>
+      <find>getBean</find>
+      <find>TestInterface</find>
+      <find>123</find>
+      <find>getGongHuiModel</find>
+      <find>MSG_ID_AVATAR_UNBIND_GROUP</find>
+      <find>20375</find>
+      <find>enterGongHui</find>
+      <find>avatarentity  getGongHuiModel  ghModel is null</find>
+      <find>setBeanFactory</find>
+      <find>beanFactory</find>
+      <find>Rpc</find>
+      <find>gong</find>
+      <find>fullAlias</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -256,9 +244,12 @@
         <option value="$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/meta/AvatarModel.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/entity/ServantEntity.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/service/user/ItemService.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/proxy/UserProxy.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/service/user/ServantService.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/utils/GongUtils.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/service/user/ServantService.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/proxy/UserProxy.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/service/user/GongHuiService.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/GasApp.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/proxy/GmProxy.java" />
       </list>
     </option>
   </component>
@@ -282,10 +273,10 @@
     </treeState>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-14" />
-    <option name="y" value="24" />
+    <option name="x" value="-43" />
+    <option name="y" value="221" />
     <option name="width" value="1440" />
-    <option name="height" value="838" />
+    <option name="height" value="839" />
   </component>
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -307,6 +298,7 @@
     <panes>
       <pane id="PackagesPane" />
       <pane id="Scratches" />
+      <pane id="AndroidView" />
       <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
@@ -331,61 +323,6 @@
               <item name="gong2-game" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="gong2-game" type="b2602c69:ProjectViewProjectNode" />
-              <item name="gong2-game" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="com" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="gong2-game" type="b2602c69:ProjectViewProjectNode" />
-              <item name="gong2-game" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="com" type="462c0819:PsiDirectoryNode" />
-              <item name="gong2" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="gong2-game" type="b2602c69:ProjectViewProjectNode" />
-              <item name="gong2-game" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="com" type="462c0819:PsiDirectoryNode" />
-              <item name="gong2" type="462c0819:PsiDirectoryNode" />
-              <item name="gas" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="gong2-game" type="b2602c69:ProjectViewProjectNode" />
-              <item name="gong2-game" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="com" type="462c0819:PsiDirectoryNode" />
-              <item name="gong2" type="462c0819:PsiDirectoryNode" />
-              <item name="gas" type="462c0819:PsiDirectoryNode" />
-              <item name="proxy" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="gong2-game" type="b2602c69:ProjectViewProjectNode" />
-              <item name="gong2-game" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="com" type="462c0819:PsiDirectoryNode" />
-              <item name="gong2" type="462c0819:PsiDirectoryNode" />
-              <item name="utils" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="gong2-game" type="b2602c69:ProjectViewProjectNode" />
-              <item name="gong2-game" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="resources" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -395,21 +332,59 @@
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="resources" type="462c0819:PsiDirectoryNode" />
               <item name="gas" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="gong2-game" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+            </path>
+            <path>
+              <item name="gong2-game" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="&lt; 1.7 &gt;" type="70bed36:NamedLibraryElementNode" />
+            </path>
+            <path>
+              <item name="gong2-game" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="&lt; 1.7 &gt;" type="70bed36:NamedLibraryElementNode" />
+              <item name="rt.jar" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="gong2-game" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="&lt; 1.7 &gt;" type="70bed36:NamedLibraryElementNode" />
+              <item name="rt.jar" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="gong2-game" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="&lt; 1.7 &gt;" type="70bed36:NamedLibraryElementNode" />
+              <item name="rt.jar" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="lang" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="gong2-game" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="&lt; 1.7 &gt;" type="70bed36:NamedLibraryElementNode" />
+              <item name="rt.jar" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="lang" type="462c0819:PsiDirectoryNode" />
+              <item name="annotation" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="AndroidView" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="settings.editor.selected.configurable" value="preferences.sourceCode" />
-    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.last.edited" value="SDKs" />
     <property name="project.structure.proportion" value="0.0" />
-    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.2" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RecentsManager">
@@ -677,12 +652,14 @@
       <workItem from="1512564373815" duration="16862000" />
       <workItem from="1512640549168" duration="38401000" />
       <workItem from="1513221336291" duration="28813000" />
-      <workItem from="1513562169427" duration="81851000" />
+      <workItem from="1513562169427" duration="90804000" />
+      <workItem from="1513925052934" duration="107000" />
+      <workItem from="1513925339684" duration="12994000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="262925000" />
+    <option name="totallyTimeSpent" value="284979000" />
   </component>
   <component name="TodoView" selected-index="2">
     <todo-panel id="selected-file">
@@ -694,31 +671,32 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-14" y="24" width="1440" height="838" extended-state="0" />
+    <frame x="-43" y="221" width="1440" height="839" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31944445" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32777777" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33425796" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34166667" sideWeight="0.50572246" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21459228" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.55277777" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32872927" sideWeight="0.49713877" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1875" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Spring" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32872927" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2995839" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17238913" sideWeight="0.49148935" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22389127" sideWeight="0.49148935" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297568" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32732317" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24964234" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24133149" sideWeight="0.49427754" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19357093" sideWeight="0.50851065" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.55" sideWeight="0.49427754" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -738,7 +716,7 @@
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="106" />
+      <option name="time" value="111" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -747,492 +725,414 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/vo/ServantNextVO.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/utils/GongProsperityiLogConstants.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="27" column="5" lean-forward="false" selection-start-line="27" selection-start-column="5" selection-end-line="27" selection-end-column="5" />
-          <folding>
-            <marker date="1513326904000" expanded="true" signature="1002:1005" ph="{...}" />
-          </folding>
+        <state relative-caret-position="68">
+          <caret line="4" column="3" lean-forward="false" selection-start-line="4" selection-start-column="3" selection-end-line="4" selection-end-column="3" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/vo/ServantVO.java">
+    <entry file="jar://$MAVEN_REPOSITORY$/mysql/mysql-connector-java/5.1.30/mysql-connector-java-5.1.30-sources.jar!/com/mysql/jdbc/SQLError.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="400">
-          <caret line="92" column="5" lean-forward="false" selection-start-line="92" selection-start-column="5" selection-end-line="92" selection-end-column="5" />
-          <folding>
-            <marker date="1513583668000" expanded="true" signature="2196:2201" ph="{...}" />
-          </folding>
+        <state relative-caret-position="115">
+          <caret line="1126" column="0" lean-forward="false" selection-start-line="1126" selection-start-column="0" selection-end-line="1126" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hadoit/game/engine/guardian/gas/listener/GasDbsListener.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/dbs/DbsApp.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="291">
-          <caret line="30" column="29" lean-forward="false" selection-start-line="30" selection-start-column="29" selection-end-line="30" selection-end-column="29" />
+        <state relative-caret-position="277">
+          <caret line="29" column="13" lean-forward="false" selection-start-line="29" selection-start-column="13" selection-end-line="29" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/dbs/db.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/dbs/application-context-dbs.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-185">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="jar://$PROJECT_DIR$/lib/game-engine-core-2.2.25.jar!/com/hadoit/game/engine/core/rpc/base/support/AbstractRpcServer.class">
+    <entry file="file://$PROJECT_DIR$/src/main/resources/gas/script/gm/cmd_com.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="286">
-          <caret line="153" column="38" lean-forward="false" selection-start-line="153" selection-start-column="38" selection-end-line="153" selection-end-column="38" />
+        <state relative-caret-position="442">
+          <caret line="26" column="28" lean-forward="false" selection-start-line="26" selection-start-column="15" selection-end-line="26" selection-end-column="28" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/dbs/proxy/UserCommandProxy.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/cross/CrossServer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="146" column="53" lean-forward="false" selection-start-line="146" selection-start-column="53" selection-end-line="146" selection-end-column="53" />
+        <state relative-caret-position="306">
+          <caret line="33" column="37" lean-forward="false" selection-start-line="33" selection-start-column="16" selection-end-line="33" selection-end-column="37" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/meta/RelationModel.java">
+    <entry file="jar://$MAVEN_REPOSITORY$/org/springframework/spring-context/3.2.8.RELEASE/spring-context-3.2.8.RELEASE-sources.jar!/org/springframework/context/ApplicationContextAware.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="64">
-          <caret line="39" column="32" lean-forward="true" selection-start-line="39" selection-start-column="32" selection-end-line="39" selection-end-column="32" />
+        <state relative-caret-position="731">
+          <caret line="58" column="17" lean-forward="false" selection-start-line="58" selection-start-column="17" selection-end-line="58" selection-end-column="17" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/config/data/VipData.java">
+    <entry file="jar://$PROJECT_DIR$/lib/game-engine-core-2.2.25.jar!/script/js/mm.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="23" column="13" lean-forward="false" selection-start-line="23" selection-start-column="13" selection-end-line="23" selection-end-column="13" />
+        <state relative-caret-position="340">
+          <caret line="20" column="4" lean-forward="false" selection-start-line="20" selection-start-column="4" selection-end-line="20" selection-end-column="4" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/dbs/service/DbsService.java">
+    <entry file="file://$PROJECT_DIR$/bin/src/main/resources/gas/script/gm/cmd_com.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="348">
-          <caret line="354" column="9" lean-forward="false" selection-start-line="354" selection-start-column="9" selection-end-line="354" selection-end-column="9" />
-          <folding>
-            <marker date="1513837855000" expanded="true" signature="19455:19575" ph="select id, u... AvatarModel" />
-            <marker date="1513837855000" expanded="true" signature="19597:19759" ph="select id, u... AvatarModel" />
-            <marker date="1513837855000" expanded="true" signature="22105:22267" ph="select id, u... AvatarModel" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/service/user/MessageService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="230" column="25" lean-forward="false" selection-start-line="230" selection-start-column="25" selection-end-line="230" selection-end-column="25" />
+        <state relative-caret-position="85">
+          <caret line="5" column="24" lean-forward="false" selection-start-line="5" selection-start-column="24" selection-end-line="5" selection-end-column="24" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hadoit/game/engine/guardian/gas/entity/Entity.java">
+    <entry file="file://$PROJECT_DIR$/src/main/resources/dbs/application-context-dbs-dao.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="23" column="0" lean-forward="true" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+        <state relative-caret-position="422">
+          <caret line="46" column="41" lean-forward="false" selection-start-line="46" selection-start-column="41" selection-end-line="46" selection-end-column="41" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hadoit/game/engine/guardian/core/invoke/Invoke.java">
+    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.7.0_71.jdk/Contents/Home/src.zip!/java/lang/Class.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="17" lean-forward="false" selection-start-line="2" selection-start-column="17" selection-end-line="2" selection-end-column="17" />
+        <state relative-caret-position="196">
+          <caret line="1854" column="20" lean-forward="false" selection-start-line="1854" selection-start-column="20" selection-end-line="1854" selection-end-column="20" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hadoit/game/engine/guardian/core/invoke/DbsInvokeDelegate.java">
+    <entry file="jar://$PROJECT_DIR$/lib/game-engine-core-2.2.25.jar!/com/hadoit/game/engine/core/utils/method/MethodInvoationWrap.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="212">
-          <caret line="19" column="26" lean-forward="false" selection-start-line="19" selection-start-column="26" selection-end-line="19" selection-end-column="26" />
+        <state relative-caret-position="324">
+          <caret line="71" column="39" lean-forward="true" selection-start-line="71" selection-start-column="39" selection-end-line="71" selection-end-column="39" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="jar://$PROJECT_DIR$/lib/game-engine-core-2.2.25.jar!/com/hadoit/game/engine/core/rpc/simple/SingleSimpleRpcClient.class">
+    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.7.0_71.jdk/Contents/Home/src.zip!/javax/script/Invocable.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="279">
-          <caret line="122" column="29" lean-forward="true" selection-start-line="122" selection-start-column="29" selection-end-line="122" selection-end-column="29" />
+        <state relative-caret-position="150">
+          <caret line="59" column="18" lean-forward="false" selection-start-line="59" selection-start-column="18" selection-end-line="59" selection-end-column="18" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="jar://$PROJECT_DIR$/lib/game-engine-core-2.2.25.jar!/com/hadoit/game/engine/core/rpc/simple/SimpleRpcClient.class">
+    <entry file="jar://$PROJECT_DIR$/lib/game-engine-core-2.2.25.jar!/com/hadoit/game/engine/core/script/ScriptEngineCore.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="77" column="21" lean-forward="false" selection-start-line="77" selection-start-column="15" selection-end-line="77" selection-end-column="21" />
+        <state relative-caret-position="167">
+          <caret line="251" column="23" lean-forward="true" selection-start-line="251" selection-start-column="23" selection-end-line="251" selection-end-column="23" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hadoit/game/engine/guardian/gas/GasManager.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/config/data/ItemData.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="255" column="26" lean-forward="false" selection-start-line="255" selection-start-column="26" selection-end-line="255" selection-end-column="26" />
+        <state relative-caret-position="396">
+          <caret line="210" column="59" lean-forward="true" selection-start-line="210" selection-start-column="59" selection-end-line="210" selection-end-column="59" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hadoit/game/engine/guardian/global/GlobalManager.java">
+    <entry file="jar://$MAVEN_REPOSITORY$/org/springframework/spring-context/3.2.8.RELEASE/spring-context-3.2.8.RELEASE-sources.jar!/org/springframework/context/support/AbstractApplicationContext.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="211">
-          <caret line="96" column="8" lean-forward="false" selection-start-line="96" selection-start-column="8" selection-end-line="96" selection-end-column="8" />
+        <state relative-caret-position="398">
+          <caret line="1191" column="35" lean-forward="true" selection-start-line="1191" selection-start-column="35" selection-end-line="1191" selection-end-column="35" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/hadoit/game/engine/guardian/core/invoke/DbsInvoke.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="19" column="23" lean-forward="true" selection-start-line="19" selection-start-column="23" selection-end-line="19" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hadoit/game/engine/guardian/gas/entity/EntityManager.java">
-      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="102">
-          <caret line="98" column="5" lean-forward="false" selection-start-line="98" selection-start-column="5" selection-end-line="98" selection-end-column="5" />
+          <caret line="9" column="37" lean-forward="false" selection-start-line="9" selection-start-column="37" selection-end-line="9" selection-end-column="37" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/utils/GongGoldLogConstants.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hadoit/game/engine/guardian/core/invoke/Invoke.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="11" column="52" lean-forward="false" selection-start-line="11" selection-start-column="22" selection-end-line="11" selection-end-column="52" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/service/user/UserService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-27">
-          <caret line="386" column="24" lean-forward="false" selection-start-line="386" selection-start-column="24" selection-end-line="386" selection-end-column="24" />
-          <folding>
-            <marker date="1513757072000" expanded="true" signature="17364:17365" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.7.0_71.jdk/Contents/Home/src.zip!/java/util/List.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="185">
-          <caret line="234" column="12" lean-forward="false" selection-start-line="234" selection-start-column="12" selection-end-line="234" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/service/user/ShejiaoService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="346">
-          <caret line="545" column="26" lean-forward="false" selection-start-line="545" selection-start-column="26" selection-end-line="545" selection-end-column="26" />
-          <folding>
-            <element signature="e#1827#1857#0" expanded="true" />
-            <element signature="e#2234#2842#0" expanded="true" />
-            <element signature="e#2841#2842#0" expanded="true" />
-            <element signature="e#3017#3047#0" expanded="true" />
-            <element signature="e#3331#3939#0" expanded="true" />
-            <element signature="e#3938#3939#0" expanded="true" />
-            <element signature="e#4703#5425#0" expanded="true" />
-            <element signature="e#5424#5425#0" expanded="true" />
-            <element signature="e#5819#6431#0" expanded="true" />
-            <element signature="e#6430#6431#0" expanded="true" />
-            <element signature="e#6823#7486#0" expanded="true" />
-            <element signature="e#7485#7486#0" expanded="true" />
-            <element signature="e#8041#9240#0" expanded="true" />
-            <element signature="e#8088#8118#0" expanded="true" />
-            <element signature="e#9239#9240#0" expanded="true" />
-            <element signature="e#9773#11891#0" expanded="true" />
-            <element signature="e#11890#11891#0" expanded="true" />
-            <element signature="e#22653#23840#0" expanded="true" />
-            <element signature="e#23839#23840#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/vo/InstanceChangeVO.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="6" column="13" lean-forward="false" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/meta/ServantModel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="219">
-          <caret line="86" column="15" lean-forward="false" selection-start-line="86" selection-start-column="15" selection-end-line="86" selection-end-column="15" />
-          <folding>
-            <element signature="e#1422#1423#0" expanded="true" />
-            <element signature="e#1455#1456#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/utils/GongLogConstants.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="13" column="0" lean-forward="false" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1-sources.jar!/org/apache/commons/collections/CollectionUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="96">
-          <caret line="978" column="41" lean-forward="false" selection-start-line="978" selection-start-column="41" selection-end-line="978" selection-end-column="41" />
-          <folding>
-            <element signature="e#39700#39701#0" expanded="false" />
-            <element signature="e#39753#39754#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.7.0_71.jdk/Contents/Home/src.zip!/java/util/Collection.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="231">
-          <caret line="144" column="0" lean-forward="false" selection-start-line="144" selection-start-column="0" selection-end-line="144" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/lib/game-common-lang-1.1.6.jar!/com/hadoit/game/common/lang/Triple.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="10" column="13" lean-forward="false" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/config/data/ServantSelectData.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="147">
-          <caret line="14" column="13" lean-forward="false" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hadoit/game/engine/guardian/gas/entity/CreateEntityOnLoadFutureCallback.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="83">
-          <caret line="34" column="0" lean-forward="false" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/meta/AvatarModel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-6919">
-          <caret line="143" column="14" lean-forward="false" selection-start-line="143" selection-start-column="14" selection-end-line="143" selection-end-column="14" />
-          <folding>
-            <element signature="e#4515#4516#0" expanded="true" />
-            <element signature="e#4531#4532#0" expanded="true" />
-            <element signature="e#12974#12975#0" expanded="true" />
-            <element signature="e#12992#12993#0" expanded="true" />
-            <element signature="e#13026#13027#0" expanded="true" />
-            <element signature="e#13049#13050#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/service/gm/GmService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-321">
-          <caret line="15" column="13" lean-forward="false" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/lib/game-engine-core-2.2.25.jar!/com/hadoit/game/engine/core/rpc/simple/handler/DefaultSimpleRpcServerHandler.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="156">
-          <caret line="34" column="128" lean-forward="false" selection-start-line="34" selection-start-column="128" selection-end-line="34" selection-end-column="128" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/lib/game-engine-core-2.2.25.jar!/com/hadoit/game/engine/core/rpc/simple/iohandler/SimpleRpcServerIoHandler.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="224">
-          <caret line="132" column="0" lean-forward="false" selection-start-line="132" selection-start-column="0" selection-end-line="132" selection-end-column="0" />
-          <folding>
-            <element signature="e#5457#5878#0" expanded="true" />
-            <element signature="e#5877#5878#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/lib/game-engine-core-2.2.25.jar!/com/hadoit/game/engine/core/utils/method/MethodInvoationWrap.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="65" column="0" lean-forward="false" selection-start-line="65" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/config/data/SysConstData.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="8" column="13" lean-forward="false" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/service/user/GongHuiService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="148">
-          <caret line="364" column="42" lean-forward="false" selection-start-line="364" selection-start-column="42" selection-end-line="364" selection-end-column="42" />
-          <folding>
-            <marker date="1513844672000" expanded="false" signature="13706:13849" ph="(r, entity) → {" />
-            <marker date="1513844672000" expanded="false" signature="15692:15715" ph="}" />
-            <marker date="1513844672000" expanded="true" signature="15729:15754" ph="/**...*/" />
-            <marker date="1513844672000" expanded="true" signature="15806:16064" ph="{...}" />
-            <marker date="1513844672000" expanded="true" signature="16128:16923" ph="{...}" />
-            <marker date="1513844672000" expanded="true" signature="16991:17729" ph="{...}" />
-            <marker date="1513844672000" expanded="true" signature="17796:18719" ph="{...}" />
-            <marker date="1513844672000" expanded="false" signature="17837:17961" ph="(Comparator) (o1, o2) → {" />
-            <marker date="1513844672000" expanded="false" signature="18696:18711" ph="}" />
-            <marker date="1513844672000" expanded="true" signature="18776:18964" ph="{...}" />
-            <marker date="1513844672000" expanded="true" signature="19038:20352" ph="{...}" />
-            <marker date="1513844672000" expanded="false" signature="19320:19390" ph="(object) → {" />
-            <marker date="1513844672000" expanded="false" signature="19484:19499" ph="}" />
-            <marker date="1513844672000" expanded="false" signature="20004:20128" ph="(Comparator) (o1, o2) → {" />
-            <marker date="1513844672000" expanded="false" signature="20328:20343" ph="}" />
-            <marker date="1513844672000" expanded="true" signature="20441:21810" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.7.0_71.jdk/Contents/Home/src.zip!/java/util/Map.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="147">
-          <caret line="292" column="9" lean-forward="false" selection-start-line="292" selection-start-column="9" selection-end-line="292" selection-end-column="9" />
+        <state relative-caret-position="85">
+          <caret line="5" column="0" lean-forward="true" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/entity/AvatarEntity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="263">
-          <caret line="799" column="0" lean-forward="false" selection-start-line="799" selection-start-column="0" selection-end-line="799" selection-end-column="0" />
+        <state relative-caret-position="244">
+          <caret line="780" column="5" lean-forward="true" selection-start-line="780" selection-start-column="5" selection-end-line="780" selection-end-column="5" />
           <folding>
-            <element signature="e#2985#2986#0" expanded="true" />
-            <element signature="e#3023#3024#0" expanded="true" />
-            <marker date="1513844672000" expanded="true" signature="21118:21121" ph="{...}" />
-            <marker date="1513844672000" expanded="true" signature="21202:21637" ph="{...}" />
-            <marker date="1513844672000" expanded="false" signature="21711:21714" ph=" }" />
+            <element signature="imports" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/config/data/DropStoreData.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="258">
-          <caret line="24" column="9" lean-forward="false" selection-start-line="24" selection-start-column="9" selection-end-line="24" selection-end-column="9" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/entity/ServantEntity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="189">
-          <caret line="81" column="13" lean-forward="false" selection-start-line="81" selection-start-column="13" selection-end-line="81" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/config/data/ServantData.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="302">
-          <caret line="64" column="0" lean-forward="false" selection-start-line="64" selection-start-column="0" selection-end-line="64" selection-end-column="0" />
-          <folding>
-            <marker date="1513590246000" expanded="true" signature="24919:24934" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/utils/GongRpcConstants.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="157">
-          <caret line="137" column="55" lean-forward="false" selection-start-line="137" selection-start-column="31" selection-end-line="137" selection-end-column="55" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/proxy/UserProxy.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="303">
-          <caret line="568" column="33" lean-forward="false" selection-start-line="568" selection-start-column="33" selection-end-line="568" selection-end-column="33" />
-          <folding>
-            <marker date="1513845277000" expanded="false" signature="37791:37929" ph="(result, num, error) → {" />
-            <marker date="1513845277000" expanded="false" signature="38175:38198" ph="}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/vo/AvatarVO.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="130" column="5" lean-forward="false" selection-start-line="130" selection-start-column="5" selection-end-line="130" selection-end-column="5" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/utils/GongConstants.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="419" column="0" lean-forward="true" selection-start-line="419" selection-start-column="0" selection-end-line="419" selection-end-column="0" />
+        <state relative-caret-position="101">
+          <caret line="266" column="54" lean-forward="false" selection-start-line="266" selection-start-column="28" selection-end-line="266" selection-end-column="54" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/utils/GongUtils.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/service/gm/GmService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="1183" column="27" lean-forward="true" selection-start-line="1183" selection-start-column="27" selection-end-line="1183" selection-end-column="27" />
-          <folding>
-            <element signature="e#37927#37945#0" expanded="true" />
-            <element signature="e#38004#38013#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/config/data/ItemData.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="246">
-          <caret line="210" column="59" lean-forward="true" selection-start-line="210" selection-start-column="59" selection-end-line="210" selection-end-column="59" />
+        <state relative-caret-position="138">
+          <caret line="45" column="7" lean-forward="true" selection-start-line="45" selection-start-column="7" selection-end-line="45" selection-end-column="7" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/service/user/ItemService.java">
+    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.7.0_71.jdk/Contents/Home/src.zip!/java/lang/reflect/Method.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="303">
-          <caret line="124" column="53" lean-forward="false" selection-start-line="124" selection-start-column="53" selection-end-line="124" selection-end-column="53" />
-          <folding>
-            <element signature="e#3829#3847#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="8682">
+          <caret line="587" column="18" lean-forward="false" selection-start-line="587" selection-start-column="18" selection-end-line="587" selection-end-column="18" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/utils/LogicUtils.java">
+    <entry file="jar://$MAVEN_REPOSITORY$/org/springframework/spring-context/3.2.8.RELEASE/spring-context-3.2.8.RELEASE-sources.jar!/org/springframework/context/access/ContextJndiBeanFactoryLocator.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-32">
-          <caret line="77" column="32" lean-forward="true" selection-start-line="77" selection-start-column="32" selection-end-line="77" selection-end-column="32" />
+        <state relative-caret-position="406">
+          <caret line="101" column="32" lean-forward="true" selection-start-line="101" selection-start-column="32" selection-end-line="101" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/service/user/ShejiaoService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="309">
+          <caret line="67" column="71" lean-forward="true" selection-start-line="67" selection-start-column="71" selection-end-line="67" selection-end-column="71" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/utils/GongRpcConstants.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="315">
+          <caret line="172" column="54" lean-forward="true" selection-start-line="172" selection-start-column="54" selection-end-line="172" selection-end-column="54" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/service/user/BuildingService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="34" column="29" lean-forward="true" selection-start-line="34" selection-start-column="29" selection-end-line="34" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/util/SpringContextHolder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="207">
+          <caret line="40" column="49" lean-forward="true" selection-start-line="40" selection-start-column="49" selection-end-line="40" selection-end-column="49" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/lib/game-engine-core-2.2.25.jar!/com/hadoit/game/engine/core/script/MmScriptEngine.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="207">
+          <caret line="90" column="16" lean-forward="false" selection-start-line="90" selection-start-column="16" selection-end-line="90" selection-end-column="16" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/service/user/ServantService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="351">
-          <caret line="624" column="9" lean-forward="true" selection-start-line="624" selection-start-column="9" selection-end-line="624" selection-end-column="9" />
+        <state relative-caret-position="6501">
+          <caret line="411" column="53" lean-forward="true" selection-start-line="411" selection-start-column="53" selection-end-line="411" selection-end-column="53" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/utils/GongUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="81" column="28" lean-forward="true" selection-start-line="81" selection-start-column="28" selection-end-line="81" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/org/springframework/spring-beans/3.2.8.RELEASE/spring-beans-3.2.8.RELEASE-sources.jar!/org/springframework/beans/factory/ListableBeanFactory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="248">
+          <caret line="222" column="0" lean-forward="true" selection-start-line="222" selection-start-column="0" selection-end-line="222" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/org/springframework/spring-context/3.2.8.RELEASE/spring-context-3.2.8.RELEASE-sources.jar!/org/springframework/context/support/ClassPathXmlApplicationContext.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="561">
+          <caret line="51" column="0" lean-forward="true" selection-start-line="51" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/src/main/resources/global/dbs/application-context-dbs-service.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="14" column="51" lean-forward="false" selection-start-line="14" selection-start-column="51" selection-end-line="14" selection-end-column="51" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/src/main/resources/global/app/application-context-app-service.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="15" column="51" lean-forward="false" selection-start-line="15" selection-start-column="51" selection-end-line="15" selection-end-column="51" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/annotation/TestInterface.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="10" column="46" lean-forward="true" selection-start-line="10" selection-start-column="46" selection-end-line="10" selection-end-column="46" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/service/user/GongHuiService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="139">
+          <caret line="217" column="42" lean-forward="false" selection-start-line="217" selection-start-column="42" selection-end-line="217" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/lib/game-engine-core-2.2.25.jar!/com/hadoit/game/engine/core/rpc/base/annotation/Rpc.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="17" column="30" lean-forward="false" selection-start-line="17" selection-start-column="30" selection-end-line="17" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/annotation/AutoGasProxy.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="12" column="3" lean-forward="false" selection-start-line="12" selection-start-column="3" selection-end-line="12" selection-end-column="3" />
           <folding>
-            <element signature="e#13029#13047#0" expanded="true" />
+            <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/proxy/BuildingProxy.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="19" column="44" lean-forward="false" selection-start-line="19" selection-start-column="44" selection-end-line="19" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hadoit/game/engine/guardian/gas/GasManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="173">
+          <caret line="240" column="28" lean-forward="false" selection-start-line="240" selection-start-column="28" selection-end-line="240" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hadoit/game/engine/guardian/core/GuardianContainer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="181">
+          <caret line="202" column="78" lean-forward="false" selection-start-line="202" selection-start-column="78" selection-end-line="202" selection-end-column="78" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/proxy/UserProxy.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="154">
+          <caret line="143" column="0" lean-forward="false" selection-start-line="143" selection-start-column="0" selection-end-line="143" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <marker date="1513995406000" expanded="true" signature="36362:36387" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/lib/game-engine-core-2.2.25.jar!/com/hadoit/game/engine/core/rpc/base/handler/MethodRpcHandlerSupport.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="158">
+          <caret line="43" column="58" lean-forward="false" selection-start-line="43" selection-start-column="58" selection-end-line="43" selection-end-column="58" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/proxy/GmProxy.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-169">
+          <caret line="133" column="53" lean-forward="false" selection-start-line="133" selection-start-column="53" selection-end-line="133" selection-end-column="53" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/gas/application-context-gas.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-78">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/gas/application-context-gas-service.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="10" column="30" lean-forward="false" selection-start-line="10" selection-start-column="30" selection-end-line="10" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/lib/game-common-lang-1.1.6.jar!/com/hadoit/game/common/lang/ReflectionUtils.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="174">
+          <caret line="39" column="30" lean-forward="false" selection-start-line="39" selection-start-column="30" selection-end-line="39" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/lib/game-common-lang-1.1.6.jar!/com/hadoit/game/common/lang/DataUtils.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="191">
+          <caret line="581" column="62" lean-forward="false" selection-start-line="581" selection-start-column="62" selection-end-line="581" selection-end-column="62" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.7.0_71.jdk/Contents/Home/src.zip!/java/lang/ClassLoader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="166">
+          <caret line="1302" column="23" lean-forward="false" selection-start-line="1302" selection-start-column="23" selection-end-line="1302" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/gamejelly/gong2/gas/GasApp.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="287">
+          <caret line="31" column="22" lean-forward="false" selection-start-line="31" selection-start-column="22" selection-end-line="31" selection-end-column="22" />
+          <folding />
         </state>
       </provider>
     </entry>

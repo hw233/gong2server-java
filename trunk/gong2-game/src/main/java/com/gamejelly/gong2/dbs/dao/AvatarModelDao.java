@@ -21,6 +21,9 @@ public class AvatarModelDao extends BaseModelDao<AvatarModel> {
 	@Autowired
 	private GuankaModelDao guankaModelDao;
 
+	@Autowired
+	private BuildingModelDao buildingModelDao;
+
 	@Override
 	protected Class<AvatarModel> getModelClass() {
 		return AvatarModel.class;
@@ -28,7 +31,7 @@ public class AvatarModelDao extends BaseModelDao<AvatarModel> {
 
 	@Override
 	protected BaseModelDao<?>[] getChildModelDaos() {
-		return new BaseModelDao<?>[] { itemModelDao, servantModelDao, cycleOperateModelDao, guankaModelDao };
+		return new BaseModelDao<?>[] { itemModelDao, servantModelDao, cycleOperateModelDao, guankaModelDao,buildingModelDao };
 	}
 
 	@Override
@@ -37,6 +40,7 @@ public class AvatarModelDao extends BaseModelDao<AvatarModel> {
 		servantModelDao.saveModels(model.getDbId(), model.getServantList());
 		cycleOperateModelDao.saveModels(model.getDbId(), model.getCycleOperateList());
 		guankaModelDao.saveModels(model.getDbId(), model.getGuankaList());
+		buildingModelDao.saveModels(model.getDbId(),model.getBuildingList());
 	}
 
 	@Override
@@ -45,6 +49,7 @@ public class AvatarModelDao extends BaseModelDao<AvatarModel> {
 		model.setServantList(servantModelDao.getModels(model.getDbId()));
 		model.setCycleOperateList(cycleOperateModelDao.getModels(model.getDbId()));
 		model.setGuankaList(guankaModelDao.getModels(model.getDbId()));
+		model.setBuildingList(buildingModelDao.getModels(model.getDbId()));
 	}
 
 }

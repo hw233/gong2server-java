@@ -23,4 +23,5 @@
 		ignore-unresolvable="true" />
 
 	<aop:aspectj-autoproxy proxy-target-class="true" />
+	<bean class="com.gamejelly.gong2.gas.util.SpringContextHolder"/>
 </beans>

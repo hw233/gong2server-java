@@ -203,6 +203,7 @@ public class GongRpcConstants {
 	/**
 	 * 好友
 	 */
+	public static final String REQ_USER_GET_JIEJIAO_LIST_AND_DEFAULT_SEARCH = "u.getJiejiaoListAndDefaultSearch";
 	public static final String REQ_USER_SEND_JIEJIAO_MSG = "u.sendJiejiaoMsg";
 	public static final String REQ_USER_SEND_JIEJIAO_MSG_BY_NAME = "u.sendJiejiaoMsgByName";
 	public static final String REQ_USER_ACCEPT_JIEJIAO = "u.acceptJiejiao";
@@ -217,13 +218,22 @@ public class GongRpcConstants {
 	public static final String REQ_USER_ADD_ENEMY = "u.addEnemy";
 	public static final String REQ_USER_GET_RECENT_CONTACT = "u.getRecentContact"; // 获取最近联系人
 	public static final String REQ_USER_GET_SIMPLE_PLAYER_INFO = "u.getSimplePlayerInfo"; // 获取某人简单信息
+	
+	/**
+	 * 好友推送
+	 */
+	public static final String RES_USER_FRIEND_LOAD_LIST = "u.loadFriendList"; // 推送好友列表
+	public static final String RES_USER_FRIEND_LOAD_DEFAULT_SEARCH_LIST = "u.loadDefaultSearchList"; // 推送推荐列表
+	public static final String RES_USER_FRIEND_LOAD_JIEJIAO_LIST = "u.loadJiejiaoList"; //推送好友申请列表
+	public static final String RES_USER_FRIEND_LOAD_ENEMY_LIST = "u.loadEnemyList"; // 推送黑名单列表
+	public static final String REQ_USER_FRIEND_LOAD_SEARCH_LIST = "u.loadSearchList"; // 推送搜索的玩家列表
 
 	/**
 	 * building
 	 */
-	public static final String REQ_BUILDING_INCR_BUILDING_PROSPERITY = "u.buildingIncrBuildingProsperity";
 	public static final String REQ_BUILDING_CREATE_BUILDING = "u.buildingCreateBuilding";
-	public static final String REQ_BUILDING_BUILDING_UPGRADE = "u.buildingBuildingUpgrade";
+	public static final String REQ_BUILDING_FIND_BUILDING_LIST = "u.buildingFindBuildingList";
+	public static final String REQ_BUILDING_UPGRADE_BUILDING = "u.buildingUpgradeBuilding";
 	public static final String REQ_BUILDING_MOVE_BUILDING = "u.buildingMoveBuilding";
 	public static final String REQ_BUILDING_FLIP_BUILDING = "u.buildingFlipBuilding";
 	public static final String REQ_BUILDING_REMOVE_BUILDING = "u.buildingRemoveBuilding";

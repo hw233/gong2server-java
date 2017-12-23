@@ -65,7 +65,8 @@ public class ShejiaoService {
                         if (error == null) {
                             if (spiList != null)
                                 checkAvatarIsOnline(spiList);
-                            rpcResult.result(new Object[] { true, result });
+                            entity.notify(GongRpcConstants.RES_USER_FRIEND_LOAD_LIST, spiList);
+                            rpcResult.result(true);
                         } else {
                             rpcResult.error();
                         }
@@ -286,38 +287,6 @@ public class ShejiaoService {
                 });
     }
 
-    /**
-     * 直接向某个角色名的玩家发送好友结交申请
-     * @param entity
-     * @param rpcResult
-     * @param roleName
-     */
-    public void sendJiejiaoByName(final AvatarEntity entity, final RpcResult rpcResult, final String roleName) {
-    	gasManager.executeRawCommand(GongDbConstants.CMD_GET_AVATAR_UID_BY_ROLE, 
-    			new Object[] {roleName}, 
-    			new RawCommandCallback() {
-
-					@Override
-					public void onResult(Object result, int num, String error) {
-						if (error == null) {
-							AvatarEntity myAvatarEntity = (AvatarEntity) gasManager.getEntityManager().getEntity(entity.getAvatarModel().getId());
-							if (myAvatarEntity == null || myAvatarEntity.isUnused()) {
-								rpcResult.error();
-                                return;
-							}
-							String targetAvatarId = (String)result;
-							if (targetAvatarId == null) {
-								rpcResult.result(false);
-								return;
-							}
-							sendJiejiaoMsg(myAvatarEntity, new String[] {targetAvatarId}, rpcResult);
-						} else {
-							rpcResult.error();
-						}
-
-					}
-				});
-    }
 
     /**
      * 同意结交为好友
@@ -354,6 +323,8 @@ public class ShejiaoService {
                                 GongCommonNotify.notifyMsg(myAvatarEntity.getChannelContext(), t.getSecond());
                                 return;
                             }
+                            // 发送同意结交为好友的邮件
+                            messageService.sendAcceptJiejiaoMsg(myAvatarEntity, fromAvatarId, rpcResult);
                             myAvatarEntity.notify(GongRpcConstants.RES_USER_AVATAR_CHANGE, new AvatarVO(myAvatarEntity));
                             rpcResult.result();
                         } else {
@@ -385,6 +356,8 @@ public class ShejiaoService {
                                 rpcResult.result(false);
                                 return;
                             }
+                            //发送拒绝好友结交的邮件
+                            messageService.sendRejectJiejiaoMsg(myAvatarEntity, fromAvatarId, rpcResult);
                             rpcResult.result();
                         } else {
                             rpcResult.error();
@@ -395,16 +368,16 @@ public class ShejiaoService {
     }
 
     /**
-     * 根据关键字匹配同服务器的玩家，获取列表
+     * 根据关键字模糊匹配角色名或uid，获取列表
      * @param entity
      * @param rpcResult
      * @param key
      * @param page
      */
-    public void searchPlayer(final AvatarEntity entity, final RpcResult rpcResult, final String key, final int page) {
+    public void searchPlayer(final AvatarEntity entity, final RpcResult rpcResult, final String key) {
 
-        gasManager.executeRawCommand(GongDbConstants.CMD_SEARCH_BY_NAME,
-                new Object[] {key, page, GongConstants.SEARCH_PLAYER_COUNT, entity.getAvatarModel().getId()},
+        gasManager.executeRawCommand(GongDbConstants.CMD_SEARCH_BY_NAME_OR_UID,
+                new Object[] {key, entity.getAvatarModel().getId()},
                 new RawCommandCallback() {
 
                     @Override
@@ -423,7 +396,12 @@ public class ShejiaoService {
      * @param rpcResult
      */
     public void defaultSearchPlayer(final AvatarEntity  entity, final RpcResult rpcResult) {
-        List<ServerChannelContext> randomContextList = GongUtils.getRandomsFromList(SecurityUtils.getChannelContexts(),
+        List<SimplePlayerInfo> spiList = getDefaultSearchPlayerList(entity);
+        rpcResult.result(new Object[] {true, spiList});
+    }
+    
+    private List<SimplePlayerInfo> getDefaultSearchPlayerList(AvatarEntity entity) {
+    	List<ServerChannelContext> randomContextList = GongUtils.getRandomsFromList(SecurityUtils.getChannelContexts(),
                 GongConstants.SEARCH_PLAYER_COUNT, true);
         List<SimplePlayerInfo> spiList = new ArrayList<>();
         for (ServerChannelContext channelContext : randomContextList) {
@@ -436,11 +414,11 @@ public class ShejiaoService {
             LoggerHelper.info("player roleName", null, spi.getName());
         }
         checkAvatarIsOnline(spiList);
-        rpcResult.result(new Object[] {true, spiList});
+        return spiList;
     }
 
     /**
-     * 获取待同意或拒绝的还有结交列表
+     * 获取待同意或拒绝的好友结交列表
      * @param entity
      * @param rpcResult
      */
@@ -454,14 +432,37 @@ public class ShejiaoService {
                         if (error == null) {
                             if (result != null)
                                 checkAvatarIsOnline((List<SimplePlayerInfo>) result);
-
-                            rpcResult.result(new Object[] { true, result });
+                            entity.notify(GongRpcConstants.RES_USER_FRIEND_LOAD_JIEJIAO_LIST, result);
+                            rpcResult.result(true);
                         } else {
                             rpcResult.error();
                         }
 
                     }
                 });
+    }
+    
+    public void getJiejiaoListAndDefaultSearch(final AvatarEntity entity, final RpcResult rpcResult) {
+    
+    	gasManager.executeRawCommand(GongDbConstants.CMD_GET_JIEJIAO_LIST, 
+    			new Object[] {entity.getAvatarModel().getId()}, 
+    			new RawCommandCallback() {
+					
+					@Override
+					public void onResult(Object result, int num, String error) {
+						if (error == null) {
+							List<SimplePlayerInfo> jiejiaoList = (List<SimplePlayerInfo>) result;
+							checkAvatarIsOnline(jiejiaoList);
+							List<SimplePlayerInfo> defaultSearchList = getDefaultSearchPlayerList(entity);
+							entity.notify(GongRpcConstants.RES_USER_FRIEND_LOAD_JIEJIAO_LIST, jiejiaoList);
+							entity.notify(GongRpcConstants.RES_USER_FRIEND_LOAD_DEFAULT_SEARCH_LIST, defaultSearchList);
+							rpcResult.result(true);
+						} else {
+							rpcResult.error();
+						}
+						
+					}
+				});
     }
 
     /**

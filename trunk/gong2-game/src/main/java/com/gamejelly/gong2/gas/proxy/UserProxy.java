@@ -52,7 +52,7 @@ public class UserProxy implements GasProxy {
 
     private final AtomicInteger curOnlineCount = new AtomicInteger(0);
 
-    private GasContext context;
+    protected GasContext context;
 
     @Value("${config.account_god_ticket}")
     private String godTicket;
@@ -358,6 +358,7 @@ public class UserProxy implements GasProxy {
         entity.notify(GongRpcConstants.RES_USER_ON_LOGIN_PRE, "itemList", entity.getAvatarModel().getItemList());// 推物品
         entity.notify(GongRpcConstants.RES_USER_ON_LOGIN_PRE, "servantList", entity.getAllServantVoList()); // 推仆从
         entity.notify(GongRpcConstants.RES_USER_ON_LOGIN_PRE, "guankaList", entity.getAllGuanka()); // 推关卡
+        entity.notify(GongRpcConstants.RES_USER_ON_LOGIN_PRE, "buildingList", entity.getAvatarModel().getBuildingList()); // 建筑
         entity.notify(GongRpcConstants.RES_USER_ON_LOGIN, new AvatarVO(entity), isNew, dailyFirstLogin);// 推登陆角色
 
 
@@ -566,7 +567,7 @@ public class UserProxy implements GasProxy {
             return;
         }
         LoggerHelper.info("servantZhaoMu", owner.getAvatarModel(), zhaoMuType, usePropType);
-        servantService.servantZhaoMu(rpcResult, owner, zhaoMuType, usePropType);
+        servantService.servantZhaoMu(owner,rpcResult, zhaoMuType, usePropType);
     }
 
 
@@ -759,30 +760,6 @@ public class UserProxy implements GasProxy {
         shejiaoService.sendJiejiaoMsg(owner, targetAvatarIdList, rpcResult);
     }
 
-    /**
-	 * 直接向某个角色名的玩家发送好友结交申请
-	 * @param channelContext
-	 * @param rpcResult
-	 * @param pos
-	 * @param servantId
-	 */
-    @Rpc(fullAlias = GongRpcConstants.REQ_USER_SEND_JIEJIAO_MSG_BY_NAME)
-    public void sendJiejiaoByName(final ServerChannelContext channelContext, final RpcResult rpcResult, final String roleName) {
-    	AvatarEntity owner = SecurityUtils.getOwner(context, channelContext);
-    	if (owner == null) {
-    		GongCommonNotify.closeForNotLogin(channelContext);
-    		return;
-    	}
-
-    	if (StringUtils.isNotBlank(roleName)) {
-    		rpcResult.result(false);
-    		return;
-    	}
-
-    	LoggerHelper.info("sendJiejiaobyName", owner.getAvatarModel(), roleName);
-
-    	shejiaoService.sendJiejiaoByName(owner, rpcResult, roleName);
-    }
 
     /**
      * 同意结交为好友
@@ -843,14 +820,14 @@ public class UserProxy implements GasProxy {
     }
 
     /**
-     * 根据关键字模糊匹配角色名，获取玩家列表
+     * 根据用户输入的角色名或者uid，获取玩家列表
      * @param channelContext
      * @param rpcResult
      * @param key
      * @param page
      */
     @Rpc(fullAlias = GongRpcConstants.REQ_USER_SEARCH_PLAYER)
-    public void searchPlayer(final ServerChannelContext channelContext, final RpcResult rpcResult, String key, int page) {
+    public void searchPlayer(final ServerChannelContext channelContext, final RpcResult rpcResult, final String key) {
 
         AvatarEntity owner = SecurityUtils.getOwner(context, channelContext);
         if (owner == null) {
@@ -858,12 +835,12 @@ public class UserProxy implements GasProxy {
             return;
         }
 
-        LoggerHelper.info("SearchPlayer", owner.getAvatarModel(), key, page);
+        LoggerHelper.info("SearchPlayer", owner.getAvatarModel(), key);
         if (StringUtils.isBlank(key)) {
             rpcResult.result(false);
             return;
         }
-        shejiaoService.searchPlayer(owner, rpcResult, key, page);
+        shejiaoService.searchPlayer(owner, rpcResult, key);
     }
 
     /**
@@ -896,6 +873,18 @@ public class UserProxy implements GasProxy {
         }
         LoggerHelper.info("getJiejiaoList", owner.getAvatarModel());
         shejiaoService.getJiejiaoList(owner, rpcResult);
+    }
+    
+    @Rpc(fullAlias = GongRpcConstants.REQ_USER_GET_JIEJIAO_LIST_AND_DEFAULT_SEARCH)
+    public void getJiejiaoListAndDefaultSearch(final ServerChannelContext channelContext, final RpcResult rpcResult) {
+    	AvatarEntity owner = SecurityUtils.getOwner(context, channelContext);
+    	if (owner == null) {
+    		GongCommonNotify.closeForNotLogin(channelContext);
+    		return;
+    	}
+    	LoggerHelper.info("getJiejiaoListAndDefault", owner.getAvatarModel());
+    	
+    	shejiaoService.getJiejiaoListAndDefaultSearch(owner, rpcResult);
     }
 
     /**
